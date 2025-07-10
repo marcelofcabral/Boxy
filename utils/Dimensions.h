@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-enum class dimensions : uint16_t
+enum class Dimensions : uint16_t
 {
     WindowWidth = 1280,
     WindowHeight = 720,

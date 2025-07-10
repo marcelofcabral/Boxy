@@ -3,8 +3,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "utils/dimensions.h"
-#include "utils/input_callbacks.h"
+#include "utils/Dimensions.h"
+#include "utils/InputCallbacks.h"
 
 int main(int argc, char* argv[])
 {
@@ -13,8 +13,8 @@ int main(int argc, char* argv[])
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(static_cast<int>(dimensions::WindowWidth),
-                                          static_cast<int>(dimensions::WindowHeight), "Boxy", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(static_cast<int>(Dimensions::WindowWidth),
+                                          static_cast<int>(Dimensions::WindowHeight), "Boxy", nullptr, nullptr);
 
     if (!window)
     {
@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
         return -1;
     }
     
-    glViewport(0, 0, static_cast<int>(dimensions::WindowWidth), static_cast<int>(dimensions::WindowHeight));
+    glViewport(0, 0, static_cast<int>(Dimensions::WindowWidth), static_cast<int>(Dimensions::WindowHeight));
 
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
     glfwSetCursorPosCallback(window, mouseCallback);

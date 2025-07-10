@@ -159,7 +159,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="objects\Object.cpp" />
+    <ClCompile Include="shaders\Shader.cpp" />
+    <ClCompile Include="stb_image_impl.cpp" />
+    <ClCompile Include="utils\shapes\Rectangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="interfaces\" />
@@ -168,10 +172,14 @@
     <Content Include=".clang-tidy" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="utils\input_callbacks.h" />
-    <ClInclude Include="utils\dimensions.h" />
-    <ClInclude Include="utils\mouse.h" />
-    <ClInclude Include="utils\timing.h" />
+    <ClInclude Include="objects\Object.h" />
+    <ClInclude Include="shaders\Shader.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="utils\InputCallbacks.h" />
+    <ClInclude Include="utils\Dimensions.h" />
+    <ClInclude Include="utils\Mouse.h" />
+    <ClInclude Include="utils\shapes\Rectangle.h" />
+    <ClInclude Include="utils\Timing.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
