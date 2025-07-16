@@ -161,7 +161,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="objects\Object.cpp" />
-    <ClCompile Include="shaders\Shader.cpp" />
+    <ClCompile Include="shaders\ShaderProgram.cpp" />
     <ClCompile Include="stb_image_impl.cpp" />
     <ClCompile Include="utils\shapes\Rectangle.cpp" />
   </ItemGroup>
@@ -170,11 +170,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".clang-tidy" />
+    <Content Include="shaders\shader_sources\PlayerFragmentShader.glsl" />
+    <Content Include="shaders\shader_sources\PlayerVertexShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="objects\Object.h" />
-    <ClInclude Include="shaders\Shader.h" />
+    <ClInclude Include="shaders\ShaderProgram.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="utils\FileHandling.h" />
     <ClInclude Include="utils\InputCallbacks.h" />
     <ClInclude Include="utils\Dimensions.h" />
     <ClInclude Include="utils\Mouse.h" />
