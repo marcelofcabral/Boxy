@@ -1,9 +1,12 @@
 #include "Object.h"
 
+#include <iostream>
 #include <vector>
 
+#include "../utils/Logging.h"
+
 Object::Object(const std::vector<float>& vertices, const std::vector<float>& colors,
-               const std::vector<uint8_t>& indices, const std::string& vertexShaderSource,
+               const std::vector<unsigned int>& indices, const std::string& vertexShaderSource,
                const std::string& fragmentShaderSource) : shaderProgram{vertexShaderSource, fragmentShaderSource}
 {
     createVao(vertices, colors, indices);
@@ -11,13 +14,13 @@ Object::Object(const std::vector<float>& vertices, const std::vector<float>& col
 
 Object::~Object()
 {
-    glDeleteBuffers(1, &vao);
+    glDeleteBuffers(1, &vbo);
     glDeleteBuffers(1, &ebo);
     glDeleteVertexArrays(1, &vao);
 }
 
 void Object::createVao(const std::vector<float>& vertices, const std::vector<float>& colors,
-                       const std::vector<uint8_t>& indices)
+                       const std::vector<unsigned int>& indices)
 {
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
@@ -27,27 +30,25 @@ void Object::createVao(const std::vector<float>& vertices, const std::vector<flo
 
     glBindVertexArray(vao);
 
-    // unifying vertex and colors for efficiency (no VBO switching)
     std::vector<float> verticesAndColors{vertices};
     verticesAndColors.insert(verticesAndColors.end(), colors.begin(), colors.end());
+    
+    logging::printVector(verticesAndColors);
 
     // VBO binding
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, verticesAndColors.size() * sizeof(float), verticesAndColors.data(), GL_STATIC_DRAW);
-
+    
     // EBO binding
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint8_t), indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
-    // configuring vertex attribute pointer
-    // for vertices
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), static_cast<void*>(nullptr));
+    // Vertex attribute pointers
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
-    // for colors
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
-                          reinterpret_cast<void*>(vertices.size() * sizeof(float)));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(vertices.size() * sizeof(float)));
     glEnableVertexAttribArray(1);
+
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -56,11 +57,37 @@ void Object::createVao(const std::vector<float>& vertices, const std::vector<flo
 
 void Object::render() const
 {
+    shaderProgram.use();
     glBindVertexArray(vao);
-    glUseProgram(shaderProgram.getId());
 
     glDrawElements(GL_TRIANGLES, numEboIndices, GL_UNSIGNED_INT, nullptr);
 
     glBindVertexArray(0);
     glUseProgram(0);
+}
+
+void Object::updateModelMatrix(const glm::mat4& newModelMatrix)
+{
+    shaderProgram.use();
+
+    shaderProgram.setUniformMat4f(ShaderProgram::modelMatrixUniformName, newModelMatrix);
+}
+
+void Object::updateViewMatrix(const glm::mat4& newViewMatrix)
+{
+    shaderProgram.use();
+    
+    shaderProgram.setUniformMat4f(ShaderProgram::viewMatrixUniformName, newViewMatrix);
+}
+
+void Object::updateProjectionMatrix(const glm::mat4& newProjectionMatrix)
+{
+    shaderProgram.use();
+    
+    shaderProgram.setUniformMat4f(ShaderProgram::projectionMatrixUniformName, newProjectionMatrix);
+}
+
+ShaderProgram& Object::getShaderProgram()
+{
+    return shaderProgram;
 }

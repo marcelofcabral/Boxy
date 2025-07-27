@@ -110,6 +110,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,12 +162,12 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="objects\Object.cpp" />
+    <ClCompile Include="scene\Scene.cpp" />
     <ClCompile Include="shaders\ShaderProgram.cpp" />
     <ClCompile Include="stb_image_impl.cpp" />
-    <ClCompile Include="utils\shapes\Rectangle.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="interfaces\" />
+    <ClCompile Include="utils\shapes\Cuboid.cpp" />
+    <ClCompile Include="utils\shapes\Plane.cpp" />
+    <ClCompile Include="utils\shapes\Shape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".clang-tidy" />
@@ -174,14 +175,19 @@
     <Content Include="shaders\shader_sources\PlayerVertexShader.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="interfaces\IRenderable.h" />
     <ClInclude Include="objects\Object.h" />
+    <ClInclude Include="scene\Scene.h" />
     <ClInclude Include="shaders\ShaderProgram.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="utils\FileHandling.h" />
     <ClInclude Include="utils\InputCallbacks.h" />
     <ClInclude Include="utils\Dimensions.h" />
+    <ClInclude Include="utils\Logging.h" />
     <ClInclude Include="utils\Mouse.h" />
-    <ClInclude Include="utils\shapes\Rectangle.h" />
+    <ClInclude Include="utils\shapes\Cuboid.h" />
+    <ClInclude Include="utils\shapes\Plane.h" />
+    <ClInclude Include="utils\shapes\Shape.h" />
     <ClInclude Include="utils\Timing.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

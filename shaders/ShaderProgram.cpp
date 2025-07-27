@@ -5,6 +5,11 @@
 
 #include "../utils/FileHandling.h"
 
+std::string ShaderProgram::viewMatrixUniformName{"uViewMatrix"};
+std::string ShaderProgram::modelMatrixUniformName{"uModelMatrix"};
+std::string ShaderProgram::projectionMatrixUniformName{"uProjectionMatrix"};
+
+
 ShaderProgram::ShaderProgram(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
 {
     const std::string vertexShaderCode{readShaderFile(vertexShaderPath)};
@@ -74,7 +79,7 @@ void ShaderProgram::setUniformVec3f(const std::string& uniformName, const glm::v
 
 void ShaderProgram::setUniformMat4f(const std::string& uniformName, const glm::mat4& value)
 {
-    glUniformMatrix4fv(glGetUniformLocation(id, uniformName.c_str()), GL_FALSE, 1, glm::value_ptr(value));
+    glUniformMatrix4fv(glGetUniformLocation(id, uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 }
 
 std::string ShaderProgram::readShaderFile(const std::string& shaderFile)

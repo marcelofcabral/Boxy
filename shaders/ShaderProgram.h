@@ -6,6 +6,14 @@
 class ShaderProgram
 {
 public:
+    static std::string viewMatrixUniformName;
+    static std::string modelMatrixUniformName;
+    static std::string projectionMatrixUniformName;
+    
+private:
+    GLuint id;
+    
+public:
     ShaderProgram(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
     ~ShaderProgram();
 
@@ -20,8 +28,6 @@ public:
     void setUniformMat4f(const std::string& uniformName, const glm::mat4& value);
 
 private:
-    GLuint id;
-    
     std::string readShaderFile(const std::string& shaderFile);
     void compileShader(const std::string& shaderCode, GLuint shaderId);
 };
