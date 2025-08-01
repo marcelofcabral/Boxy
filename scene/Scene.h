@@ -10,9 +10,12 @@ class Scene : public IRenderable
 public:
     void render() const override;
     
-    void addRenderable(const std::shared_ptr<IRenderable>& renderable);
-    void removeRenderable(const std::shared_ptr<IRenderable>& renderable);
+    void add(const std::shared_ptr<Object>& object);
+    void remove(const std::shared_ptr<Object>& object);
+
+    void updateViewMatrix(const glm::mat4& viewMatrix, const std::set<std::shared_ptr<Object>>& except);
+    
 
 private:
-    std::set<std::shared_ptr<IRenderable>> renderables;
+    std::set<std::shared_ptr<Object>> objects;
 };

@@ -2,18 +2,26 @@
 
 void Scene::render() const
 {
-    for (const std::shared_ptr<IRenderable>& renderable : renderables)
+    for (const std::shared_ptr<Object>& object : objects)
     {
-        renderable->render();
+        object->render();
     }
 }
 
-void Scene::addRenderable(const std::shared_ptr<IRenderable>& renderable)
+void Scene::add(const std::shared_ptr<Object>& object)
 {
-    renderables.insert(renderable);
+    objects.insert(object);
 }
 
-void Scene::removeRenderable(const std::shared_ptr<IRenderable>& renderable)
+void Scene::remove(const std::shared_ptr<Object>& object)
 {
-    renderables.erase(renderable);
+    objects.erase(object);
+}
+
+void Scene::updateViewMatrix(const glm::mat4& viewMatrix, const std::set<std::shared_ptr<Object>>& except)
+{
+    for (const std::shared_ptr<Object>& object : objects)
+    {
+        if (except.find(object) == except.end()) object->updateViewMatrix(viewMatrix);
+    }
 }

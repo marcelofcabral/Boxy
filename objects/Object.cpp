@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <glm/ext/matrix_transform.hpp>
 
 #include "../utils/Logging.h"
 
@@ -68,6 +69,8 @@ void Object::render() const
 
 void Object::updateModelMatrix(const glm::mat4& newModelMatrix)
 {
+    modelMatrix = newModelMatrix;
+    
     shaderProgram.use();
 
     shaderProgram.setUniformMat4f(ShaderProgram::modelMatrixUniformName, newModelMatrix);
@@ -85,6 +88,37 @@ void Object::updateProjectionMatrix(const glm::mat4& newProjectionMatrix)
     shaderProgram.use();
     
     shaderProgram.setUniformMat4f(ShaderProgram::projectionMatrixUniformName, newProjectionMatrix);
+}
+
+void Object::move(const glm::vec3& direction)
+{
+    modelMatrix = glm::translate(modelMatrix, direction);
+    
+    shaderProgram.use();
+    
+    shaderProgram.setUniformMat4f(ShaderProgram::modelMatrixUniformName, modelMatrix);
+}
+
+void Object::rotate(const float angle, const glm::vec3& axis)
+{
+    modelMatrix = glm::rotate(modelMatrix, angle, axis);
+
+    shaderProgram.use();
+
+    shaderProgram.setUniformMat4f(ShaderProgram::modelMatrixUniformName, modelMatrix);
+}
+
+void Object::setRotation(const float angle, const glm::vec3& axis)
+{
+    glm::vec3 translation = glm::vec3(modelMatrix[3]);
+    
+    modelMatrix = glm::mat4{1.f};
+    modelMatrix = glm::translate(modelMatrix, translation);
+    modelMatrix = glm::rotate(modelMatrix, angle, axis);
+
+    shaderProgram.use();
+
+    shaderProgram.setUniformMat4f(ShaderProgram::modelMatrixUniformName, modelMatrix);
 }
 
 ShaderProgram& Object::getShaderProgram()

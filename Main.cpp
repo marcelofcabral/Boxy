@@ -45,12 +45,25 @@ int main(int argc, char* argv[])
     glfwSetCursorPosCallback(window, mouseCallback);
     glfwSetScrollCallback(window, scrollCallback);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_DEPTH_TEST);
 
-    shapes::Cuboid cuboid{1.f, 1.f, 5.f};
+    shapes::Cuboid player{1.f, 1.f, 3.f};
+    shapes::Cuboid floor{15.f, 15.f, 1.f};
+    shapes::Cuboid debugCube{3.f, 0.25f, 0.25f};
 
-    std::vector colors{
+    std::vector floorColors{
+        0.5f, 0.5f, 0.5f, 1.f,
+        0.5f, 0.5f, 0.5f, 1.f,
+        0.5f, 0.5f, 0.5f, 1.f,
+        0.5f, 0.5f, 0.5f, 1.f,
+        0.5f, 0.5f, 0.5f, 1.f,
+        0.5f, 0.5f, 0.5f, 1.f,
+        0.5f, 0.5f, 0.5f, 1.f,
+        0.5f, 0.5f, 0.5f, 1.f,
+    };
+    
+    std::vector playerColors{
         0.f, 1.f, 0.f, 1.f,
         0.f, 1.f, 0.f, 1.f,
         0.f, 1.f, 0.f, 1.f,
@@ -61,38 +74,76 @@ int main(int argc, char* argv[])
         0.f, 1.f, 0.f, 1.f,
     };
 
-    const auto cuboidObjectPtr{
+    std::vector debugCubeColors{
+        0.f, 0.f, 1.f, 1.f,
+        0.f, 0.f, 1.f, 1.f,
+        0.f, 0.f, 1.f, 1.f,
+        0.f, 0.f, 1.f, 1.f,
+        0.f, 0.f, 1.f, 1.f,
+        0.f, 0.f, 1.f, 1.f,
+        0.f, 0.f, 1.f, 1.f,
+        0.f, 0.f, 1.f, 1.f,
+    };
+
+    const auto playerObjectPtr{
         std::make_shared<Object>(
-            cuboid.getVertices(), colors, cuboid.getIndices(), "./shaders/shader_sources/PlayerVertexShader.glsl",
+            player.getVertices(), playerColors, player.getIndices(), "./shaders/shader_sources/PlayerVertexShader.glsl",
             "./shaders/shader_sources/PlayerFragmentShader.glsl"
         )
     };
 
+    const auto floorObjectPtr{
+        std::make_shared<Object>(
+            floor.getVertices(), floorColors, floor.getIndices(), "./shaders/shader_sources/PlayerVertexShader.glsl",
+            "./shaders/shader_sources/PlayerFragmentShader.glsl"
+        )
+    };
+    
+    const auto debugCubeObjectPtr{
+        std::make_shared<Object>(
+            debugCube.getVertices(), debugCubeColors, debugCube.getIndices(), "./shaders/shader_sources/PlayerVertexShader.glsl",
+            "./shaders/shader_sources/PlayerFragmentShader.glsl"
+        )
+    };
+    
+    glm::mat4 initialModelMatrix{1.f};
+    
+    glm::mat4 initialPlayerModelMatrix = glm::translate(initialModelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
+    glm::mat4 initialDebugCubeModelMatrix = glm::translate(initialModelMatrix, glm::vec3(2.f, 0.f, 0.f));
+    glm::mat4 initialFloorModelMatrix = glm::translate(initialModelMatrix, glm::vec3(0.0f, 0.0f, -3.5f));
+
+    glm::mat4 projectionMatrix{
+        glm::perspective(glm::radians(45.0f),
+                         static_cast<float>(Dimensions::WindowWidth) / static_cast<float>(Dimensions::WindowHeight),
+                         0.1f, 100.0f)
+    };
+
+
+    glm::mat4 viewMatrix{
+        glm::lookAt(glm::vec3(0.f, -8.f, 18.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f))
+    };
+
+    playerObjectPtr->updateModelMatrix(initialPlayerModelMatrix);
+    playerObjectPtr->updateProjectionMatrix(projectionMatrix);
+    playerObjectPtr->updateViewMatrix(viewMatrix);
+
+    floorObjectPtr->updateModelMatrix(initialFloorModelMatrix);
+    floorObjectPtr->updateProjectionMatrix(projectionMatrix);
+    floorObjectPtr->updateViewMatrix(viewMatrix);
+
+    debugCubeObjectPtr->updateModelMatrix(initialDebugCubeModelMatrix);
+    debugCubeObjectPtr->updateProjectionMatrix(projectionMatrix);
+    debugCubeObjectPtr->updateViewMatrix(viewMatrix);
+    
     Scene mainScene;
-    mainScene.addRenderable(cuboidObjectPtr);
+    mainScene.add(playerObjectPtr);
+    mainScene.add(floorObjectPtr);
+    mainScene.add(debugCubeObjectPtr);
 
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.0f, 0.0f, 0.0f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        glm::mat4 modelMatrix{1.f};
-        modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
-        
-        glm::mat4 projectionMatrix{
-            glm::perspective(glm::radians(45.0f),
-                             static_cast<float>(Dimensions::WindowWidth) / static_cast<float>(Dimensions::WindowHeight),
-                             0.1f, 100.0f)
-        };
-
-
-        glm::mat4 viewMatrix{
-            glm::lookAt(glm::vec3(0.f, -8.f, 20.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f))
-        };
-
-        cuboidObjectPtr->updateModelMatrix(modelMatrix);
-        cuboidObjectPtr->updateProjectionMatrix(projectionMatrix);
-        cuboidObjectPtr->updateViewMatrix(viewMatrix);
 
         mainScene.render();
 
@@ -107,7 +158,22 @@ int main(int argc, char* argv[])
         glfwSwapBuffers(window);
         glfwPollEvents();
 
-        processKeyboardInput(window);
+        processKeyboardInput(window, playerObjectPtr, viewMatrix);
+
+        std::set except{playerObjectPtr, debugCubeObjectPtr};
+        
+        mainScene.updateViewMatrix(viewMatrix, except);
+
+        glm::vec3 directionVec{glm::normalize(glm::vec3(mouse::convertXToNdc(), mouse::convertYToNdc(), 0.f))};
+        
+        float angle{glm::asin(directionVec.y)};
+        
+        if (directionVec.x < 0.f) angle = -angle;
+
+        std::cout << "angle: " << glm::degrees(angle) << '\n';
+        
+        playerObjectPtr->setRotation(angle, glm::vec3{0.0f, 0.0f, 1.0f});
+        debugCubeObjectPtr->setRotation(angle, glm::vec3{0.0f, 0.0f, 1.0f});
 
         timing::currentFrame = static_cast<float>(glfwGetTime());
 

@@ -14,10 +14,12 @@ private:
     ShaderProgram shaderProgram;
     GLsizei numEboIndices;
 
+    glm::mat4 modelMatrix{1.f};
+    /*
     std::optional<glm::mat4> modelMatrixUpdate;
     std::optional<glm::mat4> viewMatrixUpdate;
     std::optional<glm::mat4> projectionMatrixUpdate;
-
+    */
 public:
     Object(const std::vector<float>& vertices, const std::vector<float>& colors, const std::vector<unsigned int>& indices,
            const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
@@ -29,6 +31,10 @@ public:
     void updateModelMatrix(const glm::mat4& newModelMatrix);
     void updateViewMatrix(const glm::mat4& newViewMatrix);
     void updateProjectionMatrix(const glm::mat4& newProjectionMatrix);
+    
+    void move(const glm::vec3& direction);
+    void rotate(float angle, const glm::vec3& axis);
+    void setRotation(float angle, const glm::vec3& axis);
 
     ShaderProgram& getShaderProgram();
 
