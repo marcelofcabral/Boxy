@@ -187,6 +187,7 @@
     <ClInclude Include="utils\InputCallbacks.h" />
     <ClInclude Include="utils\Dimensions.h" />
     <ClInclude Include="utils\Logging.h" />
+    <ClInclude Include="utils\Math.h" />
     <ClInclude Include="utils\Mouse.h" />
     <ClInclude Include="utils\shapes\Cuboid.h" />
     <ClInclude Include="utils\shapes\Plane.h" />
