@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "./Timing.h"
 #include "Mouse.h"
+#include "../camera/Camera.h"
 
 namespace
 {
@@ -33,7 +34,7 @@ inline void scrollCallback(GLFWwindow* window, double x_offset, double y_offset)
     
 }
 
-inline void processKeyboardInput(GLFWwindow* window, const std::shared_ptr<Object>& player, glm::mat4& viewMatrix)
+inline void processKeyboardInput(GLFWwindow* window, const std::shared_ptr<Camera>& camera)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
@@ -43,26 +44,22 @@ inline void processKeyboardInput(GLFWwindow* window, const std::shared_ptr<Objec
     
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        // player->move(glm::vec3(0.f, 1.f, 0.f) * playerSpeed);
-        viewMatrix = glm::translate(viewMatrix, glm::vec3(0.f, -1.f, 0.f) * playerSpeed * timing::deltaTime);
+        camera->move(CameraMovtDirection::Up);
     }
-
+    
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        // player->move(glm::vec3(0.f, -1.f, 0.f) * playerSpeed);
-        viewMatrix = glm::translate(viewMatrix, glm::vec3(0.f, 1.f, 0.f) * playerSpeed * timing::deltaTime);
+        camera->move(CameraMovtDirection::Down);
     }
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        // player->move(glm::vec3(-1.f, 0.f, 0.f) * playerSpeed);
-        viewMatrix = glm::translate(viewMatrix, glm::vec3(1.f, 0.f, 0.f) * playerSpeed * timing::deltaTime);
+        camera->move(CameraMovtDirection::Left);
     }
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        // player->move(glm::vec3(1.f, 0.f, 0.f) * playerSpeed);
-        viewMatrix = glm::translate(viewMatrix, glm::vec3(-1.f, 0.f, 0.f) * playerSpeed * timing::deltaTime);
+        camera->move(CameraMovtDirection::Right);
     }
         
 }

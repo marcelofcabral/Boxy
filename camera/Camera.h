@@ -1,0 +1,40 @@
+#pragma once
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "../utils/Dimensions.h"
+
+enum class CameraMovtDirection : uint8_t
+{
+    Up,
+    Down,
+    Left,
+    Right
+};
+
+class Camera
+{
+private:
+    glm::vec3 cameraPosition{0.f, -10.f, 18.f};
+    
+    glm::mat4 projectionMatrix{
+        glm::perspective(glm::radians(45.0f),
+                         static_cast<float>(Dimensions::WindowWidth) / static_cast<float>(Dimensions::WindowHeight),
+                         0.1f, 100.0f)
+    };
+
+    glm::mat4 viewMatrix{
+        glm::lookAt(cameraPosition, glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f))
+    };
+
+    bool viewChanged{false};
+
+public:
+    glm::mat4& getViewMatrix();
+    glm::mat4& getProjectionMatrix();
+    glm::vec3& getCameraPosition();
+    
+    void move(CameraMovtDirection direction);
+    
+    [[nodiscard]] bool getViewChanged() const { return viewChanged; }
+    void setViewChanged(const bool newState) { viewChanged = newState; }
+};

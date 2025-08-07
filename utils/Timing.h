@@ -2,5 +2,7 @@
 
 namespace timing
 {
-    float deltaTime = 0.f, currentFrame = 0.f, lastFrame = 0.f;
+    extern float deltaTime;
+    extern float currentFrame;
+    extern float lastFrame;
 }
