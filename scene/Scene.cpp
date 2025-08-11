@@ -41,6 +41,8 @@ void Scene::tick() const
     }
 }
 
+// test
+
 void Scene::syncSceneToCamera() const
 {
     if (camera->getViewChanged())

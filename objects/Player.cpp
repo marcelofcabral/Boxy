@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "../camera/Camera.h"
 
 float Player::playerSpeed = 15.f;
 

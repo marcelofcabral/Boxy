@@ -57,26 +57,28 @@ int main(int argc, char* argv[])
     const auto cameraPtr{
         std::make_shared<Camera>()
     };
-    
+
     const auto playerObjectPtr{
         std::static_pointer_cast<Object>(std::make_shared<Player>(cameraPtr))
     };
-    
+
     const auto floorObjectPtr{
         std::static_pointer_cast<Object>(std::make_shared<Floor>(cameraPtr, glm::vec3{0.0f, 0.0f, -3.5f}))
     };
-    
-    Scene mainScene{cameraPtr, playerObjectPtr};
-    
-    mainScene.add(floorObjectPtr);
+
+    const auto mainScenePtr{
+        std::make_shared<Scene>(cameraPtr, playerObjectPtr)
+    };
+
+    mainScenePtr->add(floorObjectPtr);
 
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.0f, 0.0f, 0.0f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        mainScene.tick();
-        mainScene.render();
+        mainScenePtr->tick();
+        mainScenePtr->render();
 
         const char* ptr = nullptr;
         const int errors{glfwGetError(&ptr)};
@@ -91,20 +93,24 @@ int main(int argc, char* argv[])
 
         processKeyboardInput(window, cameraPtr);
 
-        mainScene.syncSceneToCamera();
-        
+        mainScenePtr->syncSceneToCamera();
+
         glm::vec3 directionVec{glm::normalize(glm::vec3(mouse::convertXToNdc(), mouse::convertYToNdc(), 0.f))};
 
         if (mouse::getLmbClicked())
         {
+            glm::vec3 position = glm::vec3(-cameraPtr->getViewMatrix()[3].x, -cameraPtr->getViewMatrix()[3].y, 0.5f) +
+                directionVec;
+
             std::cout << "lmb clicked" << '\n';
+
             const auto projectilePtr{
-                std::static_pointer_cast<Object>(std::make_shared<Projectile>(cameraPtr, directionVec))
+                std::static_pointer_cast<Object>(std::make_shared<Projectile>(cameraPtr, mainScenePtr, directionVec, position))
             };
-            
-            mainScene.add(projectilePtr);
+
+            mainScenePtr->add(projectilePtr);
         }
-        
+
         float angle{math::getRotationAngleFromDirectionVec(directionVec)};
 
         playerObjectPtr->setRotation(angle, glm::vec3{0.0f, 0.0f, 1.0f});

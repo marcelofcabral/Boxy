@@ -1,4 +1,5 @@
 #include "Floor.h"
+#include "../camera/Camera.h"
 
 shapes::Cuboid Floor::shape{
     30.f,

@@ -22,6 +22,7 @@ private:
         glm::translate(glm::mat4{1.f}, glm::vec3(0.0f, 0.0f, 0.0f))
     };
 
+protected:
     std::shared_ptr<Camera> camera;
 
     /*
@@ -56,6 +57,8 @@ public:
     void setRotation(float angle, const glm::vec3& axis);
 
     ShaderProgram& getShaderProgram();
+
+    void printPosition();
 
 private:
     void createVao(const std::vector<float>& vertices, const std::vector<float>& colors,

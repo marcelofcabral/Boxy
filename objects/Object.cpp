@@ -3,10 +3,12 @@
 #include <vector>
 #include <glm/ext/matrix_transform.hpp>
 
+#include "Projectile.h"
 #include "../camera/Camera.h"
 #include "../utils/Logging.h"
 
-Object::Object(const std::shared_ptr<Camera>& camera, const glm::vec3& worldPosition, const std::vector<float>& vertices, const std::vector<float>& colors,
+Object::Object(const std::shared_ptr<Camera>& camera, const glm::vec3& worldPosition,
+               const std::vector<float>& vertices, const std::vector<float>& colors,
                const std::vector<unsigned int>& indices, const std::string& vertexShaderSource,
                const std::string& fragmentShaderSource) : shaderProgram{vertexShaderSource, fragmentShaderSource},
                                                           camera{camera}
@@ -15,7 +17,7 @@ Object::Object(const std::shared_ptr<Camera>& camera, const glm::vec3& worldPosi
     updateViewMatrix(camera->getViewMatrix());
     updateProjectionMatrix(camera->getProjectionMatrix());
     updateModelMatrix(glm::translate(modelMatrix, worldPosition));
-    
+
     createVao(vertices, colors, indices);
 }
 
@@ -135,4 +137,9 @@ void Object::setRotation(const float angle, const glm::vec3& axis)
 ShaderProgram& Object::getShaderProgram()
 {
     return shaderProgram;
+}
+
+void Object::printPosition()
+{
+    std::cout << "Position: " << modelMatrix[3].x << " " << modelMatrix[3].y << " " << modelMatrix[3].z << '\n';
 }
