@@ -30,7 +30,7 @@ void Scene::remove(const std::shared_ptr<Object>& object)
     objects.erase(object);
 }
 
-void Scene::tick() const
+void Scene::tick()
 {
     for (const std::shared_ptr<Object>& object : objects)
     {
@@ -39,9 +39,20 @@ void Scene::tick() const
             object->tick();
         }
     }
+
+    for (const std::shared_ptr<Object>& object : toBeRemoved)
+    {
+        remove(object);
+        std::cout << "removed object" << '\n';
+    }
+
+    toBeRemoved.clear();
 }
 
-// test
+void Scene::markForRemoval(const std::shared_ptr<Object>& object)
+{
+    toBeRemoved.push_back(object);
+}
 
 void Scene::syncSceneToCamera() const
 {
@@ -55,4 +66,19 @@ void Scene::syncSceneToCamera() const
     }
 
     camera->setViewChanged(false);
+}
+
+void Scene::incrementProjectileCount()
+{
+    ++projectileCount;
+}
+
+void Scene::decrementProjectileCount()
+{
+    --projectileCount;
+}
+
+void Scene::printProjectileCount() const
+{
+    std::cout << "Number of projectiles: " << projectileCount << '\n';
 }

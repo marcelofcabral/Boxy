@@ -1,5 +1,7 @@
 #include "Projectile.h"
 
+#include <iostream>
+
 #include "../utils/Timing.h"
 #include "../scene/Scene.h"
 
@@ -35,9 +37,9 @@ void Projectile::tick()
 {
     const glm::vec3 cameraPosition{camera->getViewMatrix()[3].x, camera->getViewMatrix()[3].y, 0.f};
 
-    if (glm::distance(cameraPosition, glm::vec3{0.f}) >= 50.f)
+    if (glm::distance(cameraPosition, glm::vec3{0.f}) >= 110.f)
     {
-        scene->remove(std::static_pointer_cast<Object>(shared_from_this()));
+        scene->markForRemoval(std::static_pointer_cast<Object>(shared_from_this()));
         return;
     }
 

@@ -64,7 +64,7 @@ void Object::createVao(const std::vector<float>& vertices, const std::vector<flo
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Object::render() const
+void Object::render()
 {
     shaderProgram.use();
     glBindVertexArray(vao);
@@ -137,6 +137,11 @@ void Object::setRotation(const float angle, const glm::vec3& axis)
 ShaderProgram& Object::getShaderProgram()
 {
     return shaderProgram;
+}
+
+glm::vec3 Object::getPosition()
+{
+    return modelMatrix[3];
 }
 
 void Object::printPosition()

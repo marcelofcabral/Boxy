@@ -18,18 +18,17 @@ private:
     ShaderProgram shaderProgram;
     GLsizei numEboIndices;
 
+protected:
+    std::shared_ptr<Camera> camera;
+
     glm::mat4 modelMatrix{
         glm::translate(glm::mat4{1.f}, glm::vec3(0.0f, 0.0f, 0.0f))
     };
 
-protected:
-    std::shared_ptr<Camera> camera;
+private:
+    void createVao(const std::vector<float>& vertices, const std::vector<float>& colors,
+                   const std::vector<unsigned int>& indices);
 
-    /*
-    std::optional<glm::mat4> modelMatrixUpdate;
-    std::optional<glm::mat4> viewMatrixUpdate;
-    std::optional<glm::mat4> projectionMatrixUpdate;
-    */
 public:
     explicit Object(const std::shared_ptr<Camera>& camera, const glm::vec3& worldPosition,
                     const std::vector<float>& vertices, const std::vector<float>& colors,
@@ -38,7 +37,7 @@ public:
 
     ~Object() override;
 
-    void render() const override;
+    void render() override;
 
     bool shouldTick = true;
 
@@ -58,9 +57,7 @@ public:
 
     ShaderProgram& getShaderProgram();
 
-    void printPosition();
+    glm::vec3 getPosition();
 
-private:
-    void createVao(const std::vector<float>& vertices, const std::vector<float>& colors,
-                   const std::vector<unsigned int>& indices);
+    void printPosition();
 };

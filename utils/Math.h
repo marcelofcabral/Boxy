@@ -6,7 +6,7 @@ namespace math
 {
     inline float getRotationAngleFromDirectionVec(const glm::vec3& directionVec)
     {
-        float angle(std::atan2(directionVec.y, directionVec.x));
+        float angle{std::atan2(directionVec.y, directionVec.x)};
 
         if (angle < 0.f)
             angle += 2.f * glm::pi<float>();

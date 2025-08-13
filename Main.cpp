@@ -78,6 +78,10 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         mainScenePtr->tick();
+
+        // std::cout << "Scene tick completed" << '\n';
+        // mainScenePtr->printProjectileCount();
+        
         mainScenePtr->render();
 
         const char* ptr = nullptr;
@@ -109,6 +113,7 @@ int main(int argc, char* argv[])
             };
 
             mainScenePtr->add(projectilePtr);
+            mainScenePtr->incrementProjectileCount();
         }
 
         float angle{math::getRotationAngleFromDirectionVec(directionVec)};

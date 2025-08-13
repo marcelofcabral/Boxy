@@ -160,6 +160,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera\Camera.cpp" />
+    <ClCompile Include="collision\BoundingBox.cpp" />
+    <ClCompile Include="collision\CollisionManager.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="objects\Floor.cpp" />
@@ -181,6 +183,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera\Camera.h" />
+    <ClInclude Include="collision\BoundingBox.h" />
+    <ClInclude Include="collision\CollisionManager.h" />
     <ClInclude Include="interfaces\IRenderable.h" />
     <ClInclude Include="objects\Floor.h" />
     <ClInclude Include="objects\Object.h" />
