@@ -11,26 +11,15 @@ namespace math
         if (angle < 0.f)
             angle += 2.f * glm::pi<float>();
 
-        // atan2 handles quadrants automatically
-        /*
-        if (directionVec.x > 0.f && directionVec.y > 0.f)
-        {
-            angle = glm::asin(directionVec.y);
-        }
-        else if (directionVec.x < 0.f && directionVec.y > 0.f)
-        {
-            angle = glm::acos(directionVec.x);
-        }
-        else if (directionVec.x < 0.f && directionVec.y < 0.f)
-        {
-            angle = glm::pi<float>() + glm::asin(-directionVec.y);
-        }
-        else if (directionVec.x > 0.f && directionVec.y < 0.f)
-        {
-            angle = 2 * glm::pi<float>() + glm::asin(directionVec.y);
-        }
-        */
-
         return angle;
+    }
+
+    inline glm::vec3 sphericalToCartesian(const float yaw, const float pitch)
+    {
+        return glm::vec3{
+            cos(glm::radians(yaw)) * cos(glm::radians(pitch)),
+            sin(glm::radians(pitch)),
+            sin(glm::radians(yaw)) * cos(glm::radians(pitch))
+        };
     }
 }

@@ -61,5 +61,24 @@ inline void processKeyboardInput(GLFWwindow* window, const std::shared_ptr<Camer
     {
         camera->move(CameraMovtDirection::Right);
     }
-        
+
+    if (glfwGetKey(window, GLFW_KEY_KP_4) == GLFW_PRESS)
+    {
+        camera->rotateAroundOrigin(CameraRotationType::Yaw, CameraRotationDirection::Clockwise);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_KP_6) == GLFW_PRESS)
+    {
+        camera->rotateAroundOrigin(CameraRotationType::Yaw, CameraRotationDirection::CounterClockwise);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_KP_8) == GLFW_PRESS)
+    {
+        camera->rotateAroundOrigin(CameraRotationType::Pitch, CameraRotationDirection::Clockwise);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_KP_2) == GLFW_PRESS)
+    {
+        camera->rotateAroundOrigin(CameraRotationType::Pitch, CameraRotationDirection::CounterClockwise);
+    }
 }

@@ -168,6 +168,7 @@
     <ClCompile Include="objects\Object.cpp" />
     <ClCompile Include="objects\Player.cpp" />
     <ClCompile Include="objects\Projectile.cpp" />
+    <ClCompile Include="rendering\Drawable.cpp" />
     <ClCompile Include="scene\Scene.cpp" />
     <ClCompile Include="shaders\ShaderProgram.cpp" />
     <ClCompile Include="stb_image_impl.cpp" />
@@ -185,7 +186,7 @@
     <ClInclude Include="camera\Camera.h" />
     <ClInclude Include="collision\BoundingBox.h" />
     <ClInclude Include="collision\CollisionManager.h" />
-    <ClInclude Include="interfaces\IRenderable.h" />
+    <ClInclude Include="rendering\Drawable.h" />
     <ClInclude Include="objects\Floor.h" />
     <ClInclude Include="objects\Object.h" />
     <ClInclude Include="objects\Player.h" />

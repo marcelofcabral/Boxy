@@ -2,6 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "../utils/Dimensions.h"
+#include "../utils/Math.h"
 
 enum class CameraMovtDirection : uint8_t
 {
@@ -11,10 +12,31 @@ enum class CameraMovtDirection : uint8_t
     Right
 };
 
+enum class CameraRotationType : uint8_t
+{
+    Pitch,
+    Yaw,
+};
+
+enum class CameraRotationDirection : uint8_t
+{
+    Clockwise,
+    CounterClockwise,
+};
+
 class Camera
 {
 private:
-    glm::vec3 cameraPosition{0.f, -10.f, 18.f};
+    static float rotationSpeed;
+    static float distanceToOrigin;
+
+    float worldPitch = -45.f, worldYaw = 90.f;
+    
+    // glm::vec3 cameraPosition{0.f, -10.f, 18.f};
+    // conversion from spherical to cartesian coordinates
+    glm::vec3 cameraPosition{
+        math::sphericalToCartesian(worldYaw, worldPitch) * distanceToOrigin,
+    };
     
     glm::mat4 projectionMatrix{
         glm::perspective(glm::radians(45.0f),
@@ -34,6 +56,7 @@ public:
     glm::vec3& getCameraPosition();
     
     void move(CameraMovtDirection direction);
+    void rotateAroundOrigin(CameraRotationType type, CameraRotationDirection direction);
     
     [[nodiscard]] bool getViewChanged() const { return viewChanged; }
     void setViewChanged(const bool newState) { viewChanged = newState; }

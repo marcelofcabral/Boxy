@@ -2,12 +2,12 @@
 #include <memory>
 #include <set>
 
-#include "../interfaces/IRenderable.h"
+#include "../rendering/Drawable.h"
 #include "../objects/Object.h"
 
 class Camera;
 
-class Scene : public IRenderable
+class Scene
 {
 private:
     std::shared_ptr<Camera> camera;
@@ -20,7 +20,7 @@ private:
 public:
     explicit Scene(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Object>& player);
     
-    void render() const override;
+    void render() const;
     void add(const std::shared_ptr<Object>& object);
     void tick();
     void markForRemoval(const std::shared_ptr<Object>& object);

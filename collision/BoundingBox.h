@@ -1,8 +1,9 @@
 #pragma once
-#include "../objects/Object.h"
 #include "../utils/shapes/Cuboid.h"
+#include "../camera/Camera.h"
+#include "../rendering/Drawable.h"
 
-class BoundingBox final : public Object
+class BoundingBox final : public Drawable
 {
 private:
     static shapes::Cuboid shape;
@@ -12,7 +13,7 @@ private:
     std::vector<float> vertices;
 
     // store pointer owner's model matrix to apply the same rotation when owner rotates
-    glm::mat4* owningObjectModelMatrix = nullptr;
+    const glm::mat4* owningObjectModelMatrix = nullptr;
     
 public:
     float minX;
@@ -25,9 +26,11 @@ public:
 
     bool shouldRecalculateMinMax = false;
     
-    BoundingBox(const std::shared_ptr<Camera>& camera, const glm::vec3& worldPosition);
+    BoundingBox(const std::shared_ptr<Camera>& camera, const glm::vec3& worldPosition, const glm::mat4* owningObjectModelMatrix);
 
     void render() override;
 
     void recalculateMinMax();
+
+    void updatePositionToMatchOwner();
 };

@@ -3,6 +3,9 @@
 #include "../objects/Player.h"
 #include "../utils/Timing.h"
 
+float Camera::rotationSpeed = 25.f;
+float Camera::distanceToOrigin = 35.f;
+
 glm::mat4& Camera::getViewMatrix()
 {
     return viewMatrix;
@@ -44,4 +47,36 @@ void Camera::move(const CameraMovtDirection direction)
     {
         viewMatrix = glm::translate(viewMatrix, glm::vec3(1.f, 0.f, 0.f) * Player::playerSpeed * timing::deltaTime);
     }
+}
+
+void Camera::rotateAroundOrigin(const CameraRotationType type, const CameraRotationDirection direction)
+{
+    viewChanged = true;
+
+    if (direction == CameraRotationDirection::Clockwise)
+    {
+        if (type == CameraRotationType::Pitch)
+        {
+            worldPitch += rotationSpeed * timing::deltaTime;
+        }
+        else
+        {
+            worldYaw += rotationSpeed * timing::deltaTime;
+        }
+    }
+    else
+    {
+        if (type == CameraRotationType::Pitch)
+        {
+            worldPitch -= rotationSpeed * timing::deltaTime;
+        }
+        else
+        {
+            worldYaw -= rotationSpeed * timing::deltaTime;
+        }
+    }
+
+    cameraPosition = math::sphericalToCartesian(worldYaw, worldPitch) * distanceToOrigin;
+
+    viewMatrix = glm::lookAt(cameraPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 }
