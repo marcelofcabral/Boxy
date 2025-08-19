@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include "objects/Enemy.h"
 #include "objects/Floor.h"
 #include "objects/Object.h"
 #include "objects/Player.h"
@@ -58,19 +59,29 @@ int main(int argc, char* argv[])
         std::make_shared<Camera>()
     };
 
-    const auto playerObjectPtr{
-        std::static_pointer_cast<Object>(std::make_shared<Player>(cameraPtr))
+    const auto mainScenePtr{
+        std::make_shared<Scene>(cameraPtr)
     };
+
+    const auto playerPtr{std::make_shared<Player>(cameraPtr, mainScenePtr)};
+    
+    const auto playerObjectPtr{
+        std::static_pointer_cast<Object>(playerPtr)
+    };
+
+    mainScenePtr->setPlayer(playerObjectPtr);
 
     const auto floorObjectPtr{
         std::static_pointer_cast<Object>(std::make_shared<Floor>(cameraPtr, glm::vec3{0.0f, 0.0f, -3.5f}))
     };
 
-    const auto mainScenePtr{
-        std::make_shared<Scene>(cameraPtr, playerObjectPtr)
+    const auto enemyObjectPtr{
+        std::static_pointer_cast<Object>(std::make_shared<Enemy>(cameraPtr, glm::vec3{10.f, 10.f, -2.5f}))
     };
 
+    mainScenePtr->add(playerObjectPtr);
     mainScenePtr->add(floorObjectPtr);
+    mainScenePtr->add(enemyObjectPtr);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -78,10 +89,6 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         mainScenePtr->tick();
-
-        // std::cout << "Scene tick completed" << '\n';
-        // mainScenePtr->printProjectileCount();
-        
         mainScenePtr->render();
 
         const char* ptr = nullptr;
@@ -103,17 +110,7 @@ int main(int argc, char* argv[])
 
         if (mouse::getLmbClicked())
         {
-            glm::vec3 position = glm::vec3(-cameraPtr->getViewMatrix()[3].x, -cameraPtr->getViewMatrix()[3].y, 0.5f) +
-                directionVec;
-
-            std::cout << "lmb clicked" << '\n';
-
-            const auto projectilePtr{
-                std::static_pointer_cast<Object>(std::make_shared<Projectile>(cameraPtr, mainScenePtr, directionVec, position))
-            };
-
-            mainScenePtr->add(projectilePtr);
-            mainScenePtr->incrementProjectileCount();
+            playerPtr->shoot(directionVec);
         }
 
         float angle{math::getRotationAngleFromDirectionVec(directionVec)};

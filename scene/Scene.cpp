@@ -6,10 +6,8 @@
 #include "../camera/Camera.h"
 #include "../objects/Projectile.h"
 
-Scene::Scene(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Object>& player) : camera{camera},
-    player{player}
+Scene::Scene(const std::shared_ptr<Camera>& camera) : camera{camera}
 {
-    objects.insert(player);
 }
 
 void Scene::render() const
@@ -52,6 +50,11 @@ void Scene::tick()
 void Scene::markForRemoval(const std::shared_ptr<Object>& object)
 {
     toBeRemoved.push_back(object);
+}
+
+void Scene::setPlayer(const std::shared_ptr<Object>& player)
+{
+    this->player = player;
 }
 
 void Scene::syncSceneToCamera() const

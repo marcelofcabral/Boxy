@@ -6,14 +6,14 @@
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
+/*
 // initial values
 shapes::Cuboid BoundingBox::shape{
     1.f,
     1.f,
     3.f
 };
-
+*/
 std::vector<float> BoundingBox::colors{
     0.627f, 0.125f, 0.941f, 1.f,
     0.627f, 0.125f, 0.941f, 1.f,
@@ -26,7 +26,7 @@ std::vector<float> BoundingBox::colors{
 };
 
 BoundingBox::BoundingBox(const std::shared_ptr<Camera>& camera, const glm::vec3& worldPosition,
-                         const glm::mat4* owningObjectModelMatrix)
+                         const glm::mat4* owningObjectModelMatrix, shapes::Cuboid& shape)
     : Drawable(camera, worldPosition, shape.getVertices(), colors, shape.getIndices(),
                "./shaders/shader_sources/PlayerVertexShader.glsl",
                "./shaders/shader_sources/PlayerFragmentShader.glsl"),
@@ -34,6 +34,7 @@ BoundingBox::BoundingBox(const std::shared_ptr<Camera>& camera, const glm::vec3&
       minZ{0.f}, maxX{0.5f}, maxY{0.5f}, maxZ{3.f}
 {
     vertices = shape.getVertices();
+    originalVertices = shape.getVertices();
 }
 
 void BoundingBox::render()
@@ -88,7 +89,7 @@ void BoundingBox::recalculateMinMax()
 
     // use original vertices coordinates since we're applying the full owner's rotation at every calculation
     // (we don't want to accumulate any previous rotation)
-    const std::vector<float>& originalVertices = shape.getVertices();
+    // const std::vector<float>& originalVertices = shape.getVertices();
     
     for (size_t i = 0; i < originalVertices.size(); i += 3)
     {

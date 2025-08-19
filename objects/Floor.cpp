@@ -19,7 +19,7 @@ std::vector<float> Floor::colors{
 };
 
 Floor::Floor(const std::shared_ptr<Camera>& camera, const glm::vec3& worldPosition) : Object(
-    camera, worldPosition, shape.getVertices(), colors, shape.getIndices(),
+    camera, worldPosition, shape, colors,
     "./shaders/shader_sources/PlayerVertexShader.glsl",
     "./shaders/shader_sources/PlayerFragmentShader.glsl")
 {

@@ -164,6 +164,7 @@
     <ClCompile Include="collision\CollisionManager.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="objects\Enemy.cpp" />
     <ClCompile Include="objects\Floor.cpp" />
     <ClCompile Include="objects\Object.cpp" />
     <ClCompile Include="objects\Player.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="camera\Camera.h" />
     <ClInclude Include="collision\BoundingBox.h" />
     <ClInclude Include="collision\CollisionManager.h" />
+    <ClInclude Include="objects\Enemy.h" />
     <ClInclude Include="rendering\Drawable.h" />
     <ClInclude Include="objects\Floor.h" />
     <ClInclude Include="objects\Object.h" />

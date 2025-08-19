@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "Enemy.h"
+#include "../collision/CollisionManager.h"
 #include "../utils/Timing.h"
 #include "../scene/Scene.h"
 
@@ -23,14 +25,14 @@ std::vector<float> Projectile::colors{
 };
 
 Projectile::Projectile(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Scene>& scene, const glm::vec3& direction,
-                       const glm::vec3& worldPosition, const float projectileSpeed)
-    : Object(camera, worldPosition, shape.getVertices(), colors,
-             shape.getIndices(),
+                       const glm::vec3& worldPosition, ProjectileOrigin origin, const float projectileSpeed)
+    : Object(camera, worldPosition, shape, colors,
              "./shaders/shader_sources/PlayerVertexShader.glsl",
              "./shaders/shader_sources/PlayerFragmentShader.glsl"),
       direction{direction}, projectileSpeed{projectileSpeed}, scene{scene}
 {
     shouldTick = true;
+    this->origin = origin;
 }
 
 void Projectile::tick()
@@ -39,6 +41,16 @@ void Projectile::tick()
 
     if (glm::distance(cameraPosition, glm::vec3{0.f}) >= 110.f)
     {
+        scene->markForRemoval(std::static_pointer_cast<Object>(shared_from_this()));
+        return;
+    }
+
+    std::shared_ptr enemy{scene->find<Enemy>()};
+    
+    if (enemy && CollisionManager::checkForBoxCollision(shared_from_this(), enemy))
+    {
+        // bugged, removing on first frame after instantiation. Check
+        std::cout << "Collision detected" << std::endl;
         scene->markForRemoval(std::static_pointer_cast<Object>(shared_from_this()));
         return;
     }

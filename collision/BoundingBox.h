@@ -6,10 +6,10 @@
 class BoundingBox final : public Drawable
 {
 private:
-    static shapes::Cuboid shape;
     static std::vector<float> colors;
 
     // used to draw the bounding box
+    std::vector<float> originalVertices;
     std::vector<float> vertices;
 
     // store pointer owner's model matrix to apply the same rotation when owner rotates
@@ -26,7 +26,7 @@ public:
 
     bool shouldRecalculateMinMax = false;
     
-    BoundingBox(const std::shared_ptr<Camera>& camera, const glm::vec3& worldPosition, const glm::mat4* owningObjectModelMatrix);
+    BoundingBox(const std::shared_ptr<Camera>& camera, const glm::vec3& worldPosition, const glm::mat4* owningObjectModelMatrix, shapes::Cuboid& shape);
 
     void render() override;
 

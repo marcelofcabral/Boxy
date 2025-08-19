@@ -5,6 +5,12 @@
 
 class Scene;
 
+enum class ProjectileOrigin : uint8_t
+{
+    Player,
+    Enemy
+};
+
 class Projectile final : public Object, public std::enable_shared_from_this<Projectile>
 {
 private:
@@ -16,9 +22,12 @@ private:
     float projectileSpeed;
 
 public:
-    explicit Projectile(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Scene>& scene, const glm::vec3& direction, 
-                      const glm::vec3& worldPosition,
-                      float projectileSpeed = 9.f);
+    explicit Projectile(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Scene>& scene,
+                        const glm::vec3& direction,
+                        const glm::vec3& worldPosition,
+                        ProjectileOrigin origin, float projectileSpeed = 9.f);
 
     void tick() override;
+
+    ProjectileOrigin origin;
 };

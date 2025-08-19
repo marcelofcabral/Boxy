@@ -57,17 +57,6 @@ void Camera::rotateAroundOrigin(const CameraRotationType type, const CameraRotat
     {
         if (type == CameraRotationType::Pitch)
         {
-            worldPitch += rotationSpeed * timing::deltaTime;
-        }
-        else
-        {
-            worldYaw += rotationSpeed * timing::deltaTime;
-        }
-    }
-    else
-    {
-        if (type == CameraRotationType::Pitch)
-        {
             worldPitch -= rotationSpeed * timing::deltaTime;
         }
         else
@@ -75,7 +64,18 @@ void Camera::rotateAroundOrigin(const CameraRotationType type, const CameraRotat
             worldYaw -= rotationSpeed * timing::deltaTime;
         }
     }
-
+    else
+    {
+        if (type == CameraRotationType::Pitch)
+        {
+            worldPitch += rotationSpeed * timing::deltaTime;
+        }
+        else
+        {
+            worldYaw += rotationSpeed * timing::deltaTime;
+        }
+    }
+    
     cameraPosition = math::sphericalToCartesian(worldYaw, worldPitch) * distanceToOrigin;
 
     viewMatrix = glm::lookAt(cameraPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
