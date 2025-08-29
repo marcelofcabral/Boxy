@@ -1,17 +1,78 @@
 #include "CollisionManager.h"
 
+#include <iostream>
+
 #include "BoundingBox.h"
 #include "../objects/Object.h"
+#include "../objects/Obstacle.h"
+
+MinMaxes CollisionManager::getMinMaxesInWorldSpace(const BoundingBox& localBox, const glm::mat4& modelMatrix)
+{
+    constexpr float maxFloat = std::numeric_limits<float>::max();
+    constexpr float minFloat = std::numeric_limits<float>::lowest();
+
+    MinMaxes worldMinMaxes{maxFloat, maxFloat, maxFloat, minFloat, minFloat, minFloat};
+
+    std::vector vertices{
+        glm::vec4{localBox.minMaxes.minX, localBox.minMaxes.minY, localBox.minMaxes.minZ, 1.0f},
+        glm::vec4{localBox.minMaxes.maxX, localBox.minMaxes.minY, localBox.minMaxes.minZ, 1.0f},
+        glm::vec4{localBox.minMaxes.minX, localBox.minMaxes.maxY, localBox.minMaxes.minZ, 1.0f},
+        glm::vec4{localBox.minMaxes.maxX, localBox.minMaxes.maxY, localBox.minMaxes.minZ, 1.0f},
+        glm::vec4{localBox.minMaxes.minX, localBox.minMaxes.minY, localBox.minMaxes.maxZ, 1.0f},
+        glm::vec4{localBox.minMaxes.maxX, localBox.minMaxes.minY, localBox.minMaxes.maxZ, 1.0f},
+        glm::vec4{localBox.minMaxes.minX, localBox.minMaxes.maxY, localBox.minMaxes.maxZ, 1.0f},
+        glm::vec4{localBox.minMaxes.maxX, localBox.minMaxes.maxY, localBox.minMaxes.maxZ, 1.0f}
+    };
+
+    for (glm::vec4& vertex : vertices)
+    {
+        glm::vec4 worldVertex = modelMatrix * vertex;
+
+        worldMinMaxes.minX = std::min(worldMinMaxes.minX, worldVertex.x);
+        worldMinMaxes.minY = std::min(worldMinMaxes.minY, worldVertex.y);
+        worldMinMaxes.minZ = std::min(worldMinMaxes.minZ, worldVertex.z);
+
+        worldMinMaxes.maxX = std::max(worldMinMaxes.maxX, worldVertex.x);
+        worldMinMaxes.maxY = std::max(worldMinMaxes.maxY, worldVertex.y);
+        worldMinMaxes.maxZ = std::max(worldMinMaxes.maxZ, worldVertex.z);
+    }
+
+    return worldMinMaxes;
+}
 
 bool CollisionManager::checkForBoxCollision(const std::shared_ptr<Object>& a, const std::shared_ptr<Object>& b)
 {
-    const BoundingBox aBox{a->getBoundingBox()};
-    const BoundingBox bBox{b->getBoundingBox()};
+    const MinMaxes aBoxWorldMinMaxes{getMinMaxesInWorldSpace(a->getBoundingBox(), a->getModelMatrix())};
+    const MinMaxes bBoxWorldMinMaxes{getMinMaxesInWorldSpace(b->getBoundingBox(), b->getModelMatrix())};
 
-    return aBox.minX <= bBox.maxX &&
-        aBox.maxX >= bBox.minX &&
-        aBox.minY <= bBox.maxY &&
-        aBox.maxY >= bBox.minY &&
-        aBox.minZ <= bBox.maxZ &&
-        aBox.maxZ >= bBox.minZ;
+    bool result = aBoxWorldMinMaxes.minX <= bBoxWorldMinMaxes.maxX &&
+        aBoxWorldMinMaxes.maxX >= bBoxWorldMinMaxes.minX &&
+        aBoxWorldMinMaxes.minY <= bBoxWorldMinMaxes.maxY &&
+        aBoxWorldMinMaxes.maxY >= bBoxWorldMinMaxes.minY &&
+        aBoxWorldMinMaxes.minZ <= bBoxWorldMinMaxes.maxZ &&
+        aBoxWorldMinMaxes.maxZ >= bBoxWorldMinMaxes.minZ;
+
+    if (std::dynamic_pointer_cast<Obstacle>(b))
+    {
+        std::cout << "a is " << a->id << " b is " << b->id << std::endl;
+        std::cout << "a mins and maxes are:" << std::endl;
+
+        std::cout << "a->minX: " << aBoxWorldMinMaxes.minX << " a->minY: " << aBoxWorldMinMaxes.minY << " a->minZ: " <<
+            aBoxWorldMinMaxes.minZ << " a->maxX: " << aBoxWorldMinMaxes.maxX << " a->maxY: " << aBoxWorldMinMaxes.maxY <<
+            " a->maxZ: " << aBoxWorldMinMaxes.maxZ << std::endl;
+
+        std::cout << "b mins and maxes are:" << std::endl;
+
+        std::cout << "b->minX: " << bBoxWorldMinMaxes.minX << " b->minY: " << bBoxWorldMinMaxes.minY << " b->minZ: " <<
+        bBoxWorldMinMaxes.minZ << " b->maxX: " << bBoxWorldMinMaxes.maxX << " b->maxY: " << bBoxWorldMinMaxes.maxY <<
+        " b->maxZ: " << bBoxWorldMinMaxes.maxZ << std::endl;
+    }
+
+
+    return aBoxWorldMinMaxes.minX <= bBoxWorldMinMaxes.maxX &&
+        aBoxWorldMinMaxes.maxX >= bBoxWorldMinMaxes.minX &&
+        aBoxWorldMinMaxes.minY <= bBoxWorldMinMaxes.maxY &&
+        aBoxWorldMinMaxes.maxY >= bBoxWorldMinMaxes.minY &&
+        aBoxWorldMinMaxes.minZ <= bBoxWorldMinMaxes.maxZ &&
+        aBoxWorldMinMaxes.maxZ >= bBoxWorldMinMaxes.minZ;
 }

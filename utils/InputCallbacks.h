@@ -1,13 +1,15 @@
 #pragma once
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "./Timing.h"
 #include "Mouse.h"
 #include "../camera/Camera.h"
+#include "../collision/CollisionManager.h"
+#include "../scene/Scene.h"
 
 namespace
 {
-    float playerSpeed = 10.f;
+    double lastCollisionToggle = 0.f;
 }
 
 inline void framebufferSizeCallback(GLFWwindow* window, int width, int height)
@@ -31,35 +33,44 @@ inline void mouseClickCallback(GLFWwindow* window, int button, int action, int m
 
 inline void scrollCallback(GLFWwindow* window, double x_offset, double y_offset)
 {
-    
 }
 
-inline void processKeyboardInput(GLFWwindow* window, const std::shared_ptr<Camera>& camera)
+inline void processKeyboardInput(GLFWwindow* window, const std::shared_ptr<Camera>& camera,
+                                 const std::shared_ptr<Scene>& scene)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, GL_TRUE);
         return;
     }
-    
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    {
-        camera->move(CameraMovtDirection::Up);
-    }
-    
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-    {
-        camera->move(CameraMovtDirection::Down);
-    }
 
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    {
-        camera->move(CameraMovtDirection::Left);
-    }
+    const std::shared_ptr player{std::static_pointer_cast<Fighter>(scene->getPlayer())};
 
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    if (!scene->isColliding(player))
     {
-        camera->move(CameraMovtDirection::Right);
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        {
+            player->move(glm::vec3{0.f, 1.f, 0.f});
+            camera->move(player);
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        {
+            player->move(glm::vec3{0.f, -1.f, 0.f});
+            camera->move(player);
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        {
+            player->move(glm::vec3{-1.f, 0.f, 0.f});
+            camera->move(player);
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        {
+            player->move(glm::vec3{1.f, 0.f, 0.f});
+            camera->move(player);
+        }
     }
 
     if (glfwGetKey(window, GLFW_KEY_KP_4) == GLFW_PRESS)
@@ -80,5 +91,14 @@ inline void processKeyboardInput(GLFWwindow* window, const std::shared_ptr<Camer
     if (glfwGetKey(window, GLFW_KEY_KP_2) == GLFW_PRESS)
     {
         camera->rotateAroundOrigin(CameraRotationType::Pitch, CameraRotationDirection::CounterClockwise);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS)
+    {
+        if (glfwGetTime() - lastCollisionToggle > 0.1f)
+        {
+            scene->toggleRenderCollisionBoxes();
+            lastCollisionToggle = glfwGetTime();
+        }
     }
 }

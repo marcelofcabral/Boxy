@@ -1,8 +1,11 @@
 #pragma once
+#include <memory>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "../utils/Dimensions.h"
 #include "../utils/Math.h"
+
+class Object;
 
 enum class CameraMovtDirection : uint8_t
 {
@@ -28,14 +31,21 @@ class Camera
 {
 private:
     static float rotationSpeed;
-    static float distanceToOrigin;
 
     float worldPitch = -45.f, worldYaw = 90.f;
     
     // glm::vec3 cameraPosition{0.f, -10.f, 18.f};
-    // conversion from spherical to cartesian coordinates
     glm::vec3 cameraPosition{
         math::sphericalToCartesian(worldYaw, worldPitch) * distanceToOrigin,
+    };
+    
+    // conversion from spherical to cartesian coordinates
+    glm::vec3 cameraOffset{
+        cameraPosition
+    };
+
+    glm::vec3 center{
+        0.f, 0.f, 0.f
     };
     
     glm::mat4 projectionMatrix{
@@ -45,17 +55,19 @@ private:
     };
 
     glm::mat4 viewMatrix{
-        glm::lookAt(cameraPosition, glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f))
+        glm::lookAt(cameraPosition, center, glm::vec3(0.f, 1.f, 0.f))
     };
 
     bool viewChanged{false};
 
 public:
+    static float distanceToOrigin;
+    
     glm::mat4& getViewMatrix();
     glm::mat4& getProjectionMatrix();
     glm::vec3& getCameraPosition();
     
-    void move(CameraMovtDirection direction);
+    void move(const std::shared_ptr<Object>& player);
     void rotateAroundOrigin(CameraRotationType type, CameraRotationDirection direction);
     
     [[nodiscard]] bool getViewChanged() const { return viewChanged; }

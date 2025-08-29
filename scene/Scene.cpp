@@ -4,6 +4,7 @@
 #include <ostream>
 
 #include "../camera/Camera.h"
+#include "../collision/CollisionManager.h"
 #include "../objects/Projectile.h"
 
 Scene::Scene(const std::shared_ptr<Camera>& camera) : camera{camera}
@@ -20,7 +21,33 @@ void Scene::render() const
 
 void Scene::add(const std::shared_ptr<Object>& object)
 {
-    objects.insert(object);
+    const auto res{objects.insert(object)};
+
+    if (res.second)
+    {
+        std::cout << "Objects added" << std::endl;
+    }
+}
+
+bool Scene::contains(const std::shared_ptr<Object>& object)
+{
+    return objects.find(object) != objects.end();
+}
+
+bool Scene::isColliding(const std::shared_ptr<Object>& object) const
+{
+    for (const std::shared_ptr<Object>& other : objects)
+    {
+        if (other != object && CollisionManager::checkForBoxCollision(object, other))
+        {
+            std::cout << "Collision detected between " << object->id << " and " << other->id << std::endl;
+            return true;
+        }
+    }
+
+    // make player vs other objects collision work
+
+    return false;
 }
 
 void Scene::remove(const std::shared_ptr<Object>& object)
@@ -57,14 +84,18 @@ void Scene::setPlayer(const std::shared_ptr<Object>& player)
     this->player = player;
 }
 
+std::shared_ptr<Object> Scene::getPlayer() const
+{
+    return player;
+}
+
 void Scene::syncSceneToCamera() const
 {
     if (camera->getViewChanged())
     {
         for (const std::shared_ptr<Object>& object : objects)
         {
-            // the player sits in the center of the screen throughout gameplay. Everything else is moved
-            if (object != player) object->syncViewMatrixToCamera();
+            object->syncViewMatrixToCamera();
         }
     }
 
@@ -84,4 +115,15 @@ void Scene::decrementProjectileCount()
 void Scene::printProjectileCount() const
 {
     std::cout << "Number of projectiles: " << projectileCount << '\n';
+}
+
+void Scene::toggleRenderCollisionBoxes()
+{
+    std::cout << "toggle render bb" << '\n';
+    shouldRenderCollisionBoxes = !shouldRenderCollisionBoxes;
+    
+    for (const std::shared_ptr<Object>& object : objects)
+    {
+        object->shouldRenderBoundingBox = shouldRenderCollisionBoxes;
+    }
 }

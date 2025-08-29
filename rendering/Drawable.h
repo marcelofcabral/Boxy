@@ -48,5 +48,9 @@ public:
     void updateViewMatrix(const glm::mat4& newViewMatrix);
     void updateProjectionMatrix(const glm::mat4& newProjectionMatrix);
 
+    glm::mat4 getModelMatrix() const;
+    glm::mat4 getViewMatrix() const;
+    glm::mat4 getProjectionMatrix() const;
+
     ShaderProgram& getShaderProgram();
 };

@@ -1,15 +1,19 @@
 #pragma once
+#include "Fighter.h"
 #include "Object.h"
 
-class Enemy final : public Object
+class Scene;
+
+class Enemy final : public Fighter
 {
 private:
-    static shapes::Cuboid shape;
     static std::vector<float> colors;
 
 public:
     static float enemySpeed;
 
-    explicit Enemy(const std::shared_ptr<Camera>& camera, const glm::vec3& worldPosition);
+    explicit Enemy(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Scene>& scene, const glm::vec3& worldPosition);
+
+    void shoot(const glm::vec3& direction) override;
     
 };

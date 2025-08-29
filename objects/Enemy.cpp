@@ -1,12 +1,9 @@
 #include "Enemy.h"
 
-float Enemy::enemySpeed = 15.f;
+#include <random>
 
-shapes::Cuboid Enemy::shape{
-    1.f,
-    1.f,
-    3.f
-};
+#include "../camera/Camera.h"
+#include "../scene/Scene.h"
 
 std::vector<float> Enemy::colors{
     1.f, 0.f, 0.f, 1.f,
@@ -19,8 +16,14 @@ std::vector<float> Enemy::colors{
     1.f, 0.f, 0.f, 1.f,
 };
 
-Enemy::Enemy(const std::shared_ptr<Camera>& camera, const glm::vec3& worldPosition) : Object(camera, worldPosition, shape, colors,
-                                                               "./shaders/shader_sources/PlayerVertexShader.glsl",
-                                                               "./shaders/shader_sources/PlayerFragmentShader.glsl")
+Enemy::Enemy(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Scene>& scene,
+             const glm::vec3& worldPosition) : Fighter(camera,
+                                                       scene, colors, worldPosition)
 {
+    id = std::string("Enemy ") + std::to_string(std::rand());
+}
+
+void Enemy::shoot(const glm::vec3& direction)
+{
+    
 }

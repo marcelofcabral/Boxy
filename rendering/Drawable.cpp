@@ -40,12 +40,6 @@ void Drawable::createVao(const std::vector<float>& vertices, const std::vector<f
     std::vector<float> verticesAndColors{vertices};
     verticesAndColors.insert(verticesAndColors.end(), colors.begin(), colors.end());
 
-    std::cout << "Vertices" << '\n';
-    logging::printVector(vertices);
-
-    std::cout << "Colors" << '\n';
-    logging::printVector(colors);
-
     // VBO binding
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, verticesAndColors.size() * sizeof(float), verticesAndColors.data(), GL_STATIC_DRAW);
@@ -103,6 +97,21 @@ void Drawable::updateProjectionMatrix(const glm::mat4& newProjectionMatrix)
     shaderProgram.use();
 
     shaderProgram.setUniformMat4f(ShaderProgram::projectionMatrixUniformName, newProjectionMatrix);
+}
+
+glm::mat4 Drawable::getModelMatrix() const
+{
+    return modelMatrix;
+}
+
+glm::mat4 Drawable::getViewMatrix() const
+{
+    return camera->getViewMatrix();
+}
+
+glm::mat4 Drawable::getProjectionMatrix() const
+{
+    return camera->getProjectionMatrix();
 }
 
 ShaderProgram& Drawable::getShaderProgram()

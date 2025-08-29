@@ -21,20 +21,27 @@ public:
     explicit Scene(const std::shared_ptr<Camera>& camera);
     
     void render() const;
+    void tick();
+    
     void add(const std::shared_ptr<Object>& object);
+    bool contains(const std::shared_ptr<Object>& object);
+    bool isColliding(const std::shared_ptr<Object>& object) const;
 
     template <class T>
-    std::shared_ptr<T> find();
+    std::shared_ptr<T> findByClass();
     
-    void tick();
     void markForRemoval(const std::shared_ptr<Object>& object);
     void setPlayer(const std::shared_ptr<Object>& player);
+    std::shared_ptr<Object> getPlayer() const;
 
     void syncSceneToCamera() const;
 
     void incrementProjectileCount();
     void decrementProjectileCount();
     void printProjectileCount() const;
+
+    bool shouldRenderCollisionBoxes = false;
+    void toggleRenderCollisionBoxes();
 
 private:
     std::set<std::shared_ptr<Object>> objects;
@@ -43,7 +50,7 @@ private:
 };
 
 template <class T>
-std::shared_ptr<T> Scene::find()
+std::shared_ptr<T> Scene::findByClass()
 {
     for (const std::shared_ptr<Object>& object : objects)
     {

@@ -30,8 +30,8 @@ BoundingBox::BoundingBox(const std::shared_ptr<Camera>& camera, const glm::vec3&
     : Drawable(camera, worldPosition, shape.getVertices(), colors, shape.getIndices(),
                "./shaders/shader_sources/PlayerVertexShader.glsl",
                "./shaders/shader_sources/PlayerFragmentShader.glsl"),
-      owningObjectModelMatrix{owningObjectModelMatrix}, minX{-0.5f}, minY{-0.5f},
-      minZ{0.f}, maxX{0.5f}, maxY{0.5f}, maxZ{3.f}
+      owningObjectModelMatrix{owningObjectModelMatrix},
+      minMaxes{-0.5f, -0.5f, 0.f, 0.5f, 0.5f, 3.f}
 {
     vertices = shape.getVertices();
     originalVertices = shape.getVertices();
@@ -39,18 +39,8 @@ BoundingBox::BoundingBox(const std::shared_ptr<Camera>& camera, const glm::vec3&
 
 void BoundingBox::render()
 {
-    /*
-    if (shouldRecalculateMinMax)
-    {
-        recalculateMinMax();
-        
-        shouldRecalculateMinMax = false;
-
-        // update VBO with new vertex positions
-    }
 
     // switch to wireframe mode
-    */
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     Drawable::render();
@@ -64,19 +54,13 @@ void BoundingBox::recalculateMinMax()
     if (!owningObjectModelMatrix) return;
 
     // reset min and max values
-    minX = std::numeric_limits<float>::max();
-    minY = std::numeric_limits<float>::max();
-    minZ = std::numeric_limits<float>::max();
-    
-    maxX = std::numeric_limits<float>::lowest();
-    maxY = std::numeric_limits<float>::lowest();
-    maxZ = std::numeric_limits<float>::lowest();
-    
-    glm::vec3 boxScale, boxTranslation, boxSkew;
-    glm::vec4 boxPerspective;
-    glm::quat boxRotation;
+    minMaxes.minX = std::numeric_limits<float>::max();
+    minMaxes.minY = std::numeric_limits<float>::max();
+    minMaxes.minZ = std::numeric_limits<float>::max();
 
-    glm::decompose(modelMatrix, boxScale, boxRotation, boxTranslation, boxSkew, boxPerspective);
+    minMaxes.maxX = std::numeric_limits<float>::lowest();
+    minMaxes.maxY = std::numeric_limits<float>::lowest();
+    minMaxes.maxZ = std::numeric_limits<float>::lowest();
 
     glm::vec3 ownerScale, ownerTranslation, ownerSkew;
     glm::vec4 ownerPerspective;
@@ -85,46 +69,42 @@ void BoundingBox::recalculateMinMax()
     glm::decompose(*owningObjectModelMatrix, ownerScale, ownerRotation, ownerTranslation, ownerSkew,
                    ownerPerspective);
 
-    glm::mat4 rotatedModelMatrix = glm::translate(glm::mat4{1.f}, boxTranslation) * glm::toMat4(ownerRotation);
-
     // use original vertices coordinates since we're applying the full owner's rotation at every calculation
     // (we don't want to accumulate any previous rotation)
-    // const std::vector<float>& originalVertices = shape.getVertices();
-    
     for (size_t i = 0; i < originalVertices.size(); i += 3)
     {
         glm::vec4 vertexPositions{originalVertices[i], originalVertices[i + 1], originalVertices[i + 2], 1.f};
 
-        glm::vec4 rotatedVertexPositions = rotatedModelMatrix * vertexPositions;
+        glm::vec4 rotatedVertexPositions = glm::toMat4(ownerRotation) * vertexPositions;
 
-        minX = glm::min(minX, rotatedVertexPositions.x);
-        minY = glm::min(minY, rotatedVertexPositions.y);
-        minZ = glm::min(minZ, rotatedVertexPositions.z);
+        minMaxes.minX = glm::min(minMaxes.minX, rotatedVertexPositions.x);
+        minMaxes.minY = glm::min(minMaxes.minY, rotatedVertexPositions.y);
+        minMaxes.minZ = glm::min(minMaxes.minZ, rotatedVertexPositions.z);
 
-        maxX = glm::max(maxX, rotatedVertexPositions.x);
-        maxY = glm::max(maxY, rotatedVertexPositions.y);
-        maxZ = glm::max(maxZ, rotatedVertexPositions.z);
+        minMaxes.maxX = glm::max(minMaxes.maxX, rotatedVertexPositions.x);
+        minMaxes.maxY = glm::max(minMaxes.maxY, rotatedVertexPositions.y);
+        minMaxes.maxZ = glm::max(minMaxes.maxZ, rotatedVertexPositions.z);
     }
 
     vertices = {
         // bottom face
-        minX, maxY, minZ, // 0
-        maxX, maxY, minZ, // 1
-        minX, minY, minZ, // 2
-        maxX, minY, minZ, // 3
+        minMaxes.minX, minMaxes.maxY, minMaxes.minZ, // 0
+        minMaxes.maxX, minMaxes.maxY, minMaxes.minZ, // 1
+        minMaxes.minX, minMaxes.minY, minMaxes.minZ, // 2
+        minMaxes.maxX, minMaxes.minY, minMaxes.minZ, // 3
 
         // top face
-        minX, maxY, maxZ, // 4
-        maxX, maxY, maxZ, // 5
-        minX, minY, maxZ, // 6
-        maxX, minY, maxZ, // 7
+        minMaxes.minX, minMaxes.maxY, minMaxes.maxZ, // 4
+        minMaxes.maxX, minMaxes.maxY, minMaxes.maxZ, // 5
+        minMaxes.minX, minMaxes.minY, minMaxes.maxZ, // 6
+        minMaxes.maxX, minMaxes.minY, minMaxes.maxZ, // 7
     };
-    
+
     std::vector<float> verticesAndColors{vertices};
     verticesAndColors.insert(verticesAndColors.end(), colors.begin(), colors.end());
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, verticesAndColors.size() * sizeof(float), verticesAndColors.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, verticesAndColors.size() * sizeof(float), verticesAndColors.data(), GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 

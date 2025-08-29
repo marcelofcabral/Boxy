@@ -11,6 +11,7 @@
 #include "objects/Enemy.h"
 #include "objects/Floor.h"
 #include "objects/Object.h"
+#include "objects/Obstacle.h"
 #include "objects/Player.h"
 #include "objects/Projectile.h"
 #include "scene/Scene.h"
@@ -75,13 +76,23 @@ int main(int argc, char* argv[])
         std::static_pointer_cast<Object>(std::make_shared<Floor>(cameraPtr, glm::vec3{0.0f, 0.0f, -3.5f}))
     };
 
-    const auto enemyObjectPtr{
-        std::static_pointer_cast<Object>(std::make_shared<Enemy>(cameraPtr, glm::vec3{10.f, 10.f, -2.5f}))
+    const auto enemyObjectPtr0{
+        std::static_pointer_cast<Object>(std::make_shared<Enemy>(cameraPtr, mainScenePtr, glm::vec3{10.f, 10.f, -2.5f}))
+    };
+
+    const auto enemyObjectPtr1{
+        std::static_pointer_cast<Object>(std::make_shared<Enemy>(cameraPtr, mainScenePtr, glm::vec3{-10.f, -10.f, -2.5f}))
+    };
+
+    const auto obstacleObjectPtr{
+        std::static_pointer_cast<Object>(std::make_shared<Obstacle>(cameraPtr, glm::vec3{5.f, 5.f, -2.5f}))
     };
 
     mainScenePtr->add(playerObjectPtr);
     mainScenePtr->add(floorObjectPtr);
-    mainScenePtr->add(enemyObjectPtr);
+    mainScenePtr->add(enemyObjectPtr0);
+    mainScenePtr->add(enemyObjectPtr1);
+    mainScenePtr->add(obstacleObjectPtr);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -102,7 +113,7 @@ int main(int argc, char* argv[])
         glfwSwapBuffers(window);
         glfwPollEvents();
 
-        processKeyboardInput(window, cameraPtr);
+        processKeyboardInput(window, cameraPtr, mainScenePtr);
 
         mainScenePtr->syncSceneToCamera();
 
@@ -115,7 +126,7 @@ int main(int argc, char* argv[])
 
         float angle{math::getRotationAngleFromDirectionVec(directionVec)};
 
-        playerObjectPtr->setRotation(angle, glm::vec3{0.0f, 0.0f, 1.0f});
+        playerPtr->setRotation(angle, glm::vec3{0.0f, 0.0f, 1.0f});
 
         timing::currentFrame = static_cast<float>(glfwGetTime());
 
