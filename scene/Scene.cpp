@@ -5,6 +5,7 @@
 
 #include "../camera/Camera.h"
 #include "../collision/CollisionManager.h"
+#include "../objects/Enemy.h"
 #include "../objects/Projectile.h"
 
 Scene::Scene(const std::shared_ptr<Camera>& camera) : camera{camera}
@@ -32,22 +33,6 @@ void Scene::add(const std::shared_ptr<Object>& object)
 bool Scene::contains(const std::shared_ptr<Object>& object)
 {
     return objects.find(object) != objects.end();
-}
-
-bool Scene::isColliding(const std::shared_ptr<Object>& object) const
-{
-    for (const std::shared_ptr<Object>& other : objects)
-    {
-        if (other != object && CollisionManager::checkForBoxCollision(object, other))
-        {
-            std::cout << "Collision detected between " << object->id << " and " << other->id << std::endl;
-            return true;
-        }
-    }
-
-    // make player vs other objects collision work
-
-    return false;
 }
 
 void Scene::remove(const std::shared_ptr<Object>& object)

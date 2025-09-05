@@ -171,6 +171,7 @@
     <ClCompile Include="objects\Obstacle.cpp" />
     <ClCompile Include="objects\Player.cpp" />
     <ClCompile Include="objects\Projectile.cpp" />
+    <ClCompile Include="objects\Wall.cpp" />
     <ClCompile Include="rendering\Drawable.cpp" />
     <ClCompile Include="scene\Scene.cpp" />
     <ClCompile Include="shaders\ShaderProgram.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="objects\Enemy.h" />
     <ClInclude Include="objects\Fighter.h" />
     <ClInclude Include="objects\Obstacle.h" />
+    <ClInclude Include="objects\Wall.h" />
     <ClInclude Include="rendering\Drawable.h" />
     <ClInclude Include="objects\Floor.h" />
     <ClInclude Include="objects\Object.h" />

@@ -1,4 +1,5 @@
 #pragma once
+#include <random>
 #include <glm/vec3.hpp>
 #include <glm/ext/scalar_constants.hpp>
 
@@ -21,5 +22,17 @@ namespace math
             sin(glm::radians(pitch)),
             sin(glm::radians(yaw)) * cos(glm::radians(pitch))
         };
+    }
+
+    inline glm::vec3 getRandomUnitVectorOnXYPlane()
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
+
+        const float randomSin{dist(gen)};
+        const float correspondingCos{sqrt(1 - pow(randomSin, 2.f))};
+
+        return {correspondingCos, randomSin, 0.f};
     }
 }

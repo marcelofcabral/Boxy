@@ -1,9 +1,13 @@
 #pragma once
+#include <iostream>
 #include <memory>
 #include <set>
 
+#include "../collision/CollisionManager.h"
+#include "../objects/Fighter.h"
 #include "../rendering/Drawable.h"
 #include "../objects/Object.h"
+#include "../objects/Projectile.h"
 
 class Camera;
 
@@ -25,7 +29,9 @@ public:
     
     void add(const std::shared_ptr<Object>& object);
     bool contains(const std::shared_ptr<Object>& object);
-    bool isColliding(const std::shared_ptr<Object>& object) const;
+
+    template <class T>
+    bool isColliding(const std::shared_ptr<Object>& object, bool* outIsEnemy = nullptr) const;
 
     template <class T>
     std::shared_ptr<T> findByClass();
@@ -61,4 +67,34 @@ std::shared_ptr<T> Scene::findByClass()
     }
 
     return nullptr;
+}
+
+// this excessive use of dynamic_pointer_cast certainly is not good, but I believe it's okay for this simple application
+template <class T>
+bool Scene::isColliding(const std::shared_ptr<Object>& object, bool* outIsOpponent) const
+{
+    for (const std::shared_ptr<Object>& other : objects)
+    {
+        if (other != object && CollisionManager::checkForBoxCollision(object, other))
+        {
+            const bool isObjectProjectile{std::dynamic_pointer_cast<Projectile>(object)};
+            const bool isOtherProjectile{std::dynamic_pointer_cast<Projectile>(other)};
+
+            if (isObjectProjectile && isOtherProjectile) continue;
+            
+            if (outIsOpponent)
+            {
+                *outIsOpponent = std::dynamic_pointer_cast<T>(other) != nullptr;
+
+                if (const auto& fighter{std::dynamic_pointer_cast<Fighter>(other)})
+                {
+                    fighter->takeDamage();
+                }
+            }
+
+            return true;
+        }
+    }
+
+    return false;
 }

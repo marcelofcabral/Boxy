@@ -35,11 +35,11 @@ BoundingBox::BoundingBox(const std::shared_ptr<Camera>& camera, const glm::vec3&
 {
     vertices = shape.getVertices();
     originalVertices = shape.getVertices();
+    recalculateMinMax();
 }
 
 void BoundingBox::render()
 {
-
     // switch to wireframe mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 

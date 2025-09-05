@@ -46,7 +46,7 @@ inline void processKeyboardInput(GLFWwindow* window, const std::shared_ptr<Camer
 
     const std::shared_ptr player{std::static_pointer_cast<Fighter>(scene->getPlayer())};
 
-    if (!scene->isColliding(player))
+    if (!scene->isColliding<Object>(player))
     {
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {

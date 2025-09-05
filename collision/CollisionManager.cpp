@@ -45,34 +45,23 @@ bool CollisionManager::checkForBoxCollision(const std::shared_ptr<Object>& a, co
     const MinMaxes aBoxWorldMinMaxes{getMinMaxesInWorldSpace(a->getBoundingBox(), a->getModelMatrix())};
     const MinMaxes bBoxWorldMinMaxes{getMinMaxesInWorldSpace(b->getBoundingBox(), b->getModelMatrix())};
 
-    bool result = aBoxWorldMinMaxes.minX <= bBoxWorldMinMaxes.maxX &&
+    const bool result{
+        aBoxWorldMinMaxes.minX <= bBoxWorldMinMaxes.maxX &&
         aBoxWorldMinMaxes.maxX >= bBoxWorldMinMaxes.minX &&
         aBoxWorldMinMaxes.minY <= bBoxWorldMinMaxes.maxY &&
         aBoxWorldMinMaxes.maxY >= bBoxWorldMinMaxes.minY &&
         aBoxWorldMinMaxes.minZ <= bBoxWorldMinMaxes.maxZ &&
-        aBoxWorldMinMaxes.maxZ >= bBoxWorldMinMaxes.minZ;
+        aBoxWorldMinMaxes.maxZ >= bBoxWorldMinMaxes.minZ
+    };
 
-    if (std::dynamic_pointer_cast<Obstacle>(b))
+    if (result)
     {
-        std::cout << "a is " << a->id << " b is " << b->id << std::endl;
-        std::cout << "a mins and maxes are:" << std::endl;
-
-        std::cout << "a->minX: " << aBoxWorldMinMaxes.minX << " a->minY: " << aBoxWorldMinMaxes.minY << " a->minZ: " <<
-            aBoxWorldMinMaxes.minZ << " a->maxX: " << aBoxWorldMinMaxes.maxX << " a->maxY: " << aBoxWorldMinMaxes.maxY <<
-            " a->maxZ: " << aBoxWorldMinMaxes.maxZ << std::endl;
-
-        std::cout << "b mins and maxes are:" << std::endl;
-
-        std::cout << "b->minX: " << bBoxWorldMinMaxes.minX << " b->minY: " << bBoxWorldMinMaxes.minY << " b->minZ: " <<
-        bBoxWorldMinMaxes.minZ << " b->maxX: " << bBoxWorldMinMaxes.maxX << " b->maxY: " << bBoxWorldMinMaxes.maxY <<
-        " b->maxZ: " << bBoxWorldMinMaxes.maxZ << std::endl;
+        std::cout << "Collision between " << a->id << " and " << b->id << '\n';
+        std::cout << "Object " << a->id << " bounds: min(" << aBoxWorldMinMaxes.minX << ", " << aBoxWorldMinMaxes.minY << ", " << aBoxWorldMinMaxes.minZ 
+                  << ") max(" << aBoxWorldMinMaxes.maxX << ", " << aBoxWorldMinMaxes.maxY << ", " << aBoxWorldMinMaxes.maxZ << ")\n";
+        std::cout << "Object " << b->id << " bounds: min(" << bBoxWorldMinMaxes.minX << ", " << bBoxWorldMinMaxes.minY << ", " << bBoxWorldMinMaxes.minZ 
+                  << ") max(" << bBoxWorldMinMaxes.maxX << ", " << bBoxWorldMinMaxes.maxY << ", " << bBoxWorldMinMaxes.maxZ << ")\n";
     }
 
-
-    return aBoxWorldMinMaxes.minX <= bBoxWorldMinMaxes.maxX &&
-        aBoxWorldMinMaxes.maxX >= bBoxWorldMinMaxes.minX &&
-        aBoxWorldMinMaxes.minY <= bBoxWorldMinMaxes.maxY &&
-        aBoxWorldMinMaxes.maxY >= bBoxWorldMinMaxes.minY &&
-        aBoxWorldMinMaxes.minZ <= bBoxWorldMinMaxes.maxZ &&
-        aBoxWorldMinMaxes.maxZ >= bBoxWorldMinMaxes.minZ;
+    return result;
 }

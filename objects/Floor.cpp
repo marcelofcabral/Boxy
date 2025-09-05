@@ -2,8 +2,8 @@
 #include "../camera/Camera.h"
 
 shapes::Cuboid Floor::shape{
-    80.f,
-    80.f,
+    100.f,
+    100.f,
     1.f
 };
 

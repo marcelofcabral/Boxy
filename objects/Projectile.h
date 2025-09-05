@@ -25,7 +25,7 @@ public:
     explicit Projectile(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Scene>& scene,
                         const glm::vec3& direction,
                         const glm::vec3& worldPosition,
-                        ProjectileOrigin origin, float projectileSpeed = 9.f);
+                        ProjectileOrigin origin, float projectileSpeed = 17.5f);
 
     void tick() override;
 

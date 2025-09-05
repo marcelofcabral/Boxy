@@ -1,5 +1,6 @@
 #include "Fighter.h"
 
+#include "Projectile.h"
 #include "../collision/CollisionManager.h"
 #include "../scene/Scene.h"
 #include "../utils/Timing.h"
@@ -14,27 +15,37 @@ shapes::Cuboid Fighter::shape{
 
 Fighter::Fighter(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Scene>& scene,
                  const std::vector<float>& colors, const glm::vec3& worldPosition) : Object(camera,
-        worldPosition, shape, colors,
-        "./shaders/shader_sources/PlayerVertexShader.glsl",
-        "./shaders/shader_sources/PlayerFragmentShader.glsl"), scene{scene}, health{5}
+    worldPosition, shape, colors,
+    "./shaders/shader_sources/PlayerVertexShader.glsl",
+    "./shaders/shader_sources/PlayerFragmentShader.glsl"), scene{scene}, health{5}
 {
 }
 
-void Fighter::move(const glm::vec3& direction)
+bool Fighter::move(const glm::vec3& direction)
 {
     const glm::vec3 movementVector = direction * speed * timing::deltaTime;
 
     // modelMatrix = glm::translate(modelMatrix, movementVector);
     modelMatrix[3] += glm::vec4{movementVector, 0.0f};
 
-    if (!scene->isColliding(shared_from_this()))
+    const bool willCollide = scene->isColliding<Object>(shared_from_this()) || modelMatrix[3].x < -50.f ||
+        modelMatrix[3].y < -50.f || modelMatrix[3].z < -50.f || modelMatrix[3].x > 50.f || modelMatrix[3].y > 50.f ||
+        modelMatrix[3].z > 50.f;
+
+    std::cout << id << " position: ";
+    printPosition();
+    
+    if (!willCollide)
     {
         Object::move(movementVector, true);
     }
     else
     {
+        std::cout << "Collision when moving" << '\n';
         modelMatrix[3] -= glm::vec4{movementVector, 0.0f};
     }
+
+    return !willCollide;
 }
 
 void Fighter::takeDamage()
@@ -47,36 +58,16 @@ void Fighter::takeDamage()
     }
 }
 
-void Fighter::rotate(const float angle, const glm::vec3& axis)
+void Fighter::shoot(const glm::vec3& direction, ProjectileOrigin projectileOrigin)
 {
-    modelMatrix = glm::rotate(modelMatrix, angle, axis);
+    glm::vec3 position = glm::vec3(modelMatrix[3].x, modelMatrix[3].y, -1.f) +
+        direction * 2.f;
 
-    shaderProgram.use();
+    const auto projectilePtr{
+        std::static_pointer_cast<Object>(
+            std::make_shared<Projectile>(camera, scene, direction, position, projectileOrigin))
+    };
 
-    shaderProgram.setUniformMat4f(ShaderProgram::modelMatrixUniformName, modelMatrix);
-
-    boundingBox.recalculateMinMax();
-}
-
-void Fighter::setRotation(const float angle, const glm::vec3& axis)
-{
-    if (std::abs(angle - this->rotationAngle) <= 0.0001f)
-    {
-        return;
-    }
-
-    glm::vec3 translation = glm::vec3(modelMatrix[3]);
-
-    modelMatrix = glm::mat4{1.f};
-    modelMatrix = glm::translate(modelMatrix, translation);
-    modelMatrix = glm::rotate(modelMatrix, angle, axis);
-
-    shaderProgram.use();
-
-    shaderProgram.setUniformMat4f(ShaderProgram::modelMatrixUniformName, modelMatrix);
-
-    // boundingBox.updatePositionToMatchOwner();
-    boundingBox.recalculateMinMax();
-
-    rotationAngle = angle;
+    scene->add(projectilePtr);
+    scene->incrementProjectileCount();
 }

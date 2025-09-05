@@ -36,6 +36,40 @@ void Object::move(const glm::vec3& movementVector, const bool isFighter)
     boundingBox.updatePositionToMatchOwner();
 }
 
+void Object::rotate(const float angle, const glm::vec3& axis)
+{
+    modelMatrix = glm::rotate(modelMatrix, angle, axis);
+
+    shaderProgram.use();
+
+    shaderProgram.setUniformMat4f(ShaderProgram::modelMatrixUniformName, modelMatrix);
+
+    boundingBox.recalculateMinMax();
+}
+
+void Object::setRotation(const float angle, const glm::vec3& axis)
+{
+    if (std::abs(angle - this->rotationAngle) <= 0.0001f)
+    {
+        return;
+    }
+
+    glm::vec3 translation = glm::vec3(modelMatrix[3]);
+
+    modelMatrix = glm::mat4{1.f};
+    modelMatrix = glm::translate(modelMatrix, translation);
+    modelMatrix = glm::rotate(modelMatrix, angle, axis);
+
+    shaderProgram.use();
+
+    shaderProgram.setUniformMat4f(ShaderProgram::modelMatrixUniformName, modelMatrix);
+
+    // boundingBox.updatePositionToMatchOwner();
+    boundingBox.recalculateMinMax();
+
+    rotationAngle = angle;
+}
+
 void Object::syncViewMatrixToCamera()
 {
     Drawable::syncViewMatrixToCamera();

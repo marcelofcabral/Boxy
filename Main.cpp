@@ -14,6 +14,7 @@
 #include "objects/Obstacle.h"
 #include "objects/Player.h"
 #include "objects/Projectile.h"
+#include "objects/Wall.h"
 #include "scene/Scene.h"
 #include "utils/Dimensions.h"
 #include "utils/InputCallbacks.h"
@@ -71,17 +72,21 @@ int main(int argc, char* argv[])
     };
 
     mainScenePtr->setPlayer(playerObjectPtr);
-
+    /*
+    const auto leftWallObjectPtr{
+        std::static_pointer_cast<Object>(std::make_shared<Wall>(cameraPtr, glm::vec3{-40.f, 0.f, -2.5f}, 90.f))
+    };
+    */
     const auto floorObjectPtr{
         std::static_pointer_cast<Object>(std::make_shared<Floor>(cameraPtr, glm::vec3{0.0f, 0.0f, -3.5f}))
     };
 
     const auto enemyObjectPtr0{
-        std::static_pointer_cast<Object>(std::make_shared<Enemy>(cameraPtr, mainScenePtr, glm::vec3{10.f, 10.f, -2.5f}))
+        std::static_pointer_cast<Object>(std::make_shared<Enemy>(cameraPtr, mainScenePtr, glm::vec3{10.f, 10.f, -2.3f}))
     };
 
     const auto enemyObjectPtr1{
-        std::static_pointer_cast<Object>(std::make_shared<Enemy>(cameraPtr, mainScenePtr, glm::vec3{-10.f, -10.f, -2.5f}))
+        std::static_pointer_cast<Object>(std::make_shared<Enemy>(cameraPtr, mainScenePtr, glm::vec3{-10.f, -10.f, -2.3f}))
     };
 
     const auto obstacleObjectPtr{
@@ -93,6 +98,7 @@ int main(int argc, char* argv[])
     mainScenePtr->add(enemyObjectPtr0);
     mainScenePtr->add(enemyObjectPtr1);
     mainScenePtr->add(obstacleObjectPtr);
+    // mainScenePtr->add(leftWallObjectPtr);
 
     while (!glfwWindowShouldClose(window))
     {

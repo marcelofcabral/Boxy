@@ -38,4 +38,8 @@ public:
     BoundingBox& getBoundingBox();
 
     bool shouldRenderBoundingBox = false;
+
+    void rotate(float angle, const glm::vec3& axis);
+
+    void setRotation(float angle, const glm::vec3& axis);
 };

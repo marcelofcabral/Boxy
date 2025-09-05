@@ -6,6 +6,7 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include "Enemy.h"
+#include "Player.h"
 #include "../collision/CollisionManager.h"
 #include "../utils/Timing.h"
 #include "../scene/Scene.h"
@@ -43,27 +44,26 @@ Projectile::Projectile(const std::shared_ptr<Camera>& camera, const std::shared_
 
 void Projectile::tick()
 {
-    /*
-    std::cout << "Projectile position: X = " << getPosition().x << " Y = " << getPosition().y << " Z = " <<
-        getPosition().z << " - In scene: " << (scene->contains(shared_from_this()) ? "yes" : "no") << std::endl;*/
-    // const glm::vec3 cameraPosition{camera->getViewMatrix()[3].x, camera->getViewMatrix()[3].y, 0.f};
-
-    // std::cout << "Projectile model matrix: " << glm::to_string(getModelMatrix()) << std::endl;
-
     if (glm::distance(getPosition(), glm::vec3{0.f}) >= 110.f)
     {
         scene->markForRemoval(std::static_pointer_cast<Object>(shared_from_this()));
         return;
     }
 
-    std::shared_ptr enemy{scene->findByClass<Enemy>()};
-    
-    if (enemy && CollisionManager::checkForBoxCollision(shared_from_this(), enemy))
+    bool isOpponent = false;
+
+    const bool isColliding{
+        origin == ProjectileOrigin::Player
+            ? scene->isColliding<Enemy>(shared_from_this(), &isOpponent)
+            : scene->isColliding<Player>(shared_from_this(), &isOpponent)
+    };
+
+    if (isColliding)
     {
-        std::cout << "Collision detected" << std::endl;
+        if (isOpponent) std::cout << "Opponent collision detected!!" << std::endl;
         scene->markForRemoval(std::static_pointer_cast<Object>(shared_from_this()));
         return;
     }
-    
+
     move(direction * projectileSpeed * timing::deltaTime);
 }

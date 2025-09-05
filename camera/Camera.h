@@ -45,7 +45,7 @@ private:
     };
 
     glm::vec3 center{
-        0.f, 0.f, 0.f
+        0.f, 0.f, -2.4f
     };
     
     glm::mat4 projectionMatrix{
