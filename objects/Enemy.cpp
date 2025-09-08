@@ -37,6 +37,8 @@ void Enemy::shoot(const glm::vec3& direction)
 
 void Enemy::tick()
 {
+    if (!scene->getPlayer()->hasMoved) return;
+    
     if (const std::shared_ptr player{scene->getPlayer()}; glm::distance(player->getPosition(), getPosition()) <= 30.f)
     {
         const glm::vec3 playerDirection{glm::normalize(player->getPosition() - getPosition())};
@@ -44,7 +46,7 @@ void Enemy::tick()
         setRotation(math::getRotationAngleFromDirectionVec(playerDirection), glm::vec3{0.f, 0.f, 1.f});
 
         // shooting
-        if (player->hasMoved && glfwGetTime() - lastShotTimestamp > shotInterval)
+        if (glfwGetTime() - lastShotTimestamp > shotInterval)
         {
             shoot(playerDirection);
             lastShotTimestamp = glfwGetTime();
