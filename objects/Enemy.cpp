@@ -6,8 +6,9 @@
 #include "Projectile.h"
 #include "../camera/Camera.h"
 #include "../scene/Scene.h"
+#include "../objects/Player.h"
 
-float Enemy::shotInterval = .7f;
+float Enemy::shotInterval = .58f;
 
 std::vector<float> Enemy::colors{
     1.f, 0.f, 0.f, 1.f,
@@ -36,16 +37,14 @@ void Enemy::shoot(const glm::vec3& direction)
 
 void Enemy::tick()
 {
-    const glm::vec3 playerPosition{scene->getPlayer()->getPosition()};
-    
-    if (glm::distance(playerPosition, getPosition()) <= 30.f)
+    if (const std::shared_ptr player{scene->getPlayer()}; glm::distance(player->getPosition(), getPosition()) <= 30.f)
     {
-        const glm::vec3 playerDirection{glm::normalize(playerPosition - getPosition())};
+        const glm::vec3 playerDirection{glm::normalize(player->getPosition() - getPosition())};
         
         setRotation(math::getRotationAngleFromDirectionVec(playerDirection), glm::vec3{0.f, 0.f, 1.f});
 
         // shooting
-        if (glfwGetTime() - lastShotTimestamp > shotInterval)
+        if (player->hasMoved && glfwGetTime() - lastShotTimestamp > shotInterval)
         {
             shoot(playerDirection);
             lastShotTimestamp = glfwGetTime();

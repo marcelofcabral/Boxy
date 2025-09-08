@@ -19,7 +19,7 @@ public:
     explicit Fighter(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Scene>& scene, const std::vector<float>& colors,
                      const glm::vec3& worldPosition);
 
-    bool move(const glm::vec3& direction);
+    virtual bool move(const glm::vec3& direction);
     void shoot(const glm::vec3& direction, ProjectileOrigin projectileOrigin);
 
     virtual void takeDamage();

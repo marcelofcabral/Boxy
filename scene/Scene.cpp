@@ -4,6 +4,7 @@
 #include <ostream>
 
 #include "../camera/Camera.h"
+#include "../objects/Player.h"
 
 Scene::Scene(const std::shared_ptr<Camera>& camera) : camera{camera}
 {
@@ -55,12 +56,12 @@ void Scene::markForRemoval(const std::shared_ptr<Object>& object)
     toBeRemoved.push_back(object);
 }
 
-void Scene::setPlayer(const std::shared_ptr<Object>& player)
+void Scene::setPlayer(const std::shared_ptr<Player>& player)
 {
     this->player = player;
 }
 
-std::shared_ptr<Object> Scene::getPlayer() const
+std::shared_ptr<Player> Scene::getPlayer() const
 {
     return player;
 }

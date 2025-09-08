@@ -14,5 +14,9 @@ public:
 
     void shoot(const glm::vec3& direction);
 
+    bool move(const glm::vec3& direction) override;
+    
     void takeDamage() override;
+
+    bool hasMoved = false;
 };

@@ -25,7 +25,7 @@ Player::Player(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Scen
 {
     id = std::string("Player ") + std::to_string(std::rand());
 
-    health = 8;
+    health = 12;
 }
 
 void Player::shoot(const glm::vec3& direction)
@@ -33,6 +33,13 @@ void Player::shoot(const glm::vec3& direction)
     if (health == 0) return;
     
     Fighter::shoot(direction, ProjectileOrigin::Player);
+}
+
+bool Player::move(const glm::vec3& direction)
+{
+    if (!hasMoved) hasMoved = true;
+    
+    return Fighter::move(direction);
 }
 
 void Player::takeDamage()

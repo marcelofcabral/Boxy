@@ -204,6 +204,7 @@
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="utils\Debug.h" />
     <ClInclude Include="utils\FileHandling.h" />
+    <ClInclude Include="utils\Game.h" />
     <ClInclude Include="utils\InputCallbacks.h" />
     <ClInclude Include="utils\Dimensions.h" />
     <ClInclude Include="utils\Logging.h" />

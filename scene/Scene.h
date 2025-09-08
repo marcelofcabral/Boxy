@@ -9,13 +9,14 @@
 #include "../objects/Object.h"
 #include "../objects/Projectile.h"
 
+class Player;
 class Camera;
 
 class Scene
 {
 private:
     std::shared_ptr<Camera> camera;
-    std::shared_ptr<Object> player;
+    std::shared_ptr<Player> player;
 
     uint8_t projectileCount = 0;
 
@@ -37,8 +38,8 @@ public:
     std::shared_ptr<T> findByClass();
     
     void markForRemoval(const std::shared_ptr<Object>& object);
-    void setPlayer(const std::shared_ptr<Object>& player);
-    std::shared_ptr<Object> getPlayer() const;
+    void setPlayer(const std::shared_ptr<Player>& player);
+    std::shared_ptr<Player> getPlayer() const;
 
     void syncSceneToCamera() const;
 
@@ -77,7 +78,6 @@ bool Scene::isColliding(const std::shared_ptr<Object>& object, bool* outIsOppone
     {
         if (other != object && CollisionManager::checkForBoxCollision(object, other))
         {
-            // const bool isObjectProjectile{std::dynamic_pointer_cast<Projectile>(object)};
             const bool isOtherProjectile{std::dynamic_pointer_cast<Projectile>(other)};
 
             if (isOtherProjectile) continue;
