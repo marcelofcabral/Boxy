@@ -2,6 +2,7 @@
 
 #include "Player.h"
 
+#include <thread>
 #include <glm/gtx/string_cast.hpp>
 
 #include "Projectile.h"
@@ -29,5 +30,35 @@ Player::Player(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Scen
 
 void Player::shoot(const glm::vec3& direction)
 {
+    if (health == 0) return;
+    
     Fighter::shoot(direction, ProjectileOrigin::Player);
+}
+
+void Player::takeDamage()
+{
+    Fighter::takeDamage();
+
+    if (health == 0)
+    {
+        camera->isLocked = true;
+
+        std::thread([this]()
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+
+            health = 8;
+            
+            setPosition(glm::vec3{
+                0, 0, 0
+            });
+
+            camera->isLocked = false;
+            camera->move(shared_from_this());
+            syncViewMatrixToCamera();
+            
+            scene->add(shared_from_this());
+            
+        }).detach();
+    }
 }

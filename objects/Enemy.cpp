@@ -7,7 +7,7 @@
 #include "../camera/Camera.h"
 #include "../scene/Scene.h"
 
-float Enemy::shotInterval = .5f;
+float Enemy::shotInterval = .7f;
 
 std::vector<float> Enemy::colors{
     1.f, 0.f, 0.f, 1.f,
@@ -56,7 +56,7 @@ void Enemy::tick()
     // movement
     if (!move(movementDirection))
     {
-        const float newDirectionAngle{acos(movementDirection.x) + 180.f};
+        const float newDirectionAngle{math::getRotationAngleFromDirectionVec(movementDirection) + 180.f};
         
         movementDirection = glm::vec3(cos(newDirectionAngle), sin(newDirectionAngle), 0.f);
 

@@ -13,4 +13,6 @@ public:
     explicit Player(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Scene>& scene);
 
     void shoot(const glm::vec3& direction);
+
+    void takeDamage() override;
 };

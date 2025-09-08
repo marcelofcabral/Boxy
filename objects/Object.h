@@ -27,6 +27,7 @@ public:
 
     void render() override;
     void move(const glm::vec3& movementVector, bool isFighter = false);
+    void setPosition(const glm::vec3& position);
     
     void syncViewMatrixToCamera() override;
 

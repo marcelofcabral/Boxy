@@ -22,40 +22,12 @@ glm::vec3& Camera::getCameraPosition()
     return cameraPosition;
 }
 
-void Camera::move(/*const CameraMovtDirection direction*/const std::shared_ptr<Object>& player)
+void Camera::move(const std::shared_ptr<Object>& player)
 {
+    if (isLocked) return;
+    
     viewChanged = true;
-
-    // const float directionScalar = Fighter::speed * timing::deltaTime;
-    /*
-    if (direction == CameraMovtDirection::Up)
-    {
-        cameraPosition += glm::vec3{0.0f, 1.0f, 0.0f} * directionScalar;
-        center += glm::vec3{0.0f, 1.0f, 0.0f} * directionScalar;
-        // viewMatrix = glm::translate(viewMatrix, glm::vec3(0.f, -1.f, 0.f) * Fighter::speed * timing::deltaTime);
-        // return;
-    } else if (direction == CameraMovtDirection::Down)
-    {
-        cameraPosition += glm::vec3{0.0f, -1.0f, 0.0f} * directionScalar;
-        center += glm::vec3{0.0f, -1.0f, 0.0f} * directionScalar;
-        // viewMatrix = glm::translate(viewMatrix, glm::vec3(0.f, 1.f, 0.f) * Fighter::speed * timing::deltaTime);
-        // return;
-    } else if (direction == CameraMovtDirection::Right)
-    {
-        cameraPosition += glm::vec3{1.0f, 0.0f, 0.0f} * directionScalar;
-        center += glm::vec3{1.0f, 0.0f, 0.0f} * directionScalar;
-        // viewMatrix = glm::translate(viewMatrix, glm::vec3(-1.f, 0.f, 0.f) * Fighter::speed * timing::deltaTime);
-        // return;
-    } else if (direction == CameraMovtDirection::Left)
-    {
-        cameraPosition += glm::vec3{-1.0f, 0.0f, 0.0f} * directionScalar;
-        center += glm::vec3{-1.0f, 0.0f, 0.0f} * directionScalar;
-        // viewMatrix = glm::translate(viewMatrix, glm::vec3(1.f, 0.f, 0.f) * Fighter::speed * timing::deltaTime);
-    }
-
-    viewMatrix = glm::lookAt(cameraPosition, center, glm::vec3{0.0f, 1.0f, 0.0f});
-    */
-
+    
     cameraPosition = player->getPosition() + cameraOffset;
     center = player->getPosition();
     viewMatrix = glm::lookAt(cameraPosition, center, glm::vec3{0.0f, 1.0f, 0.0f});

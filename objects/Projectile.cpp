@@ -60,7 +60,6 @@ void Projectile::tick()
 
     if (isColliding)
     {
-        if (isOpponent) std::cout << "Opponent collision detected!!" << std::endl;
         scene->markForRemoval(std::static_pointer_cast<Object>(shared_from_this()));
         return;
     }

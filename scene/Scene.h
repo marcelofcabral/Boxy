@@ -31,7 +31,7 @@ public:
     bool contains(const std::shared_ptr<Object>& object);
 
     template <class T>
-    bool isColliding(const std::shared_ptr<Object>& object, bool* outIsEnemy = nullptr) const;
+    bool isColliding(const std::shared_ptr<Object>& object, bool* outIsOpponent = nullptr) const;
 
     template <class T>
     std::shared_ptr<T> findByClass();
@@ -77,17 +77,18 @@ bool Scene::isColliding(const std::shared_ptr<Object>& object, bool* outIsOppone
     {
         if (other != object && CollisionManager::checkForBoxCollision(object, other))
         {
-            const bool isObjectProjectile{std::dynamic_pointer_cast<Projectile>(object)};
+            // const bool isObjectProjectile{std::dynamic_pointer_cast<Projectile>(object)};
             const bool isOtherProjectile{std::dynamic_pointer_cast<Projectile>(other)};
 
-            if (isObjectProjectile && isOtherProjectile) continue;
+            if (isOtherProjectile) continue;
             
             if (outIsOpponent)
             {
                 *outIsOpponent = std::dynamic_pointer_cast<T>(other) != nullptr;
 
-                if (const auto& fighter{std::dynamic_pointer_cast<Fighter>(other)})
+                if (*outIsOpponent)
                 {
+                    const auto& fighter{std::dynamic_pointer_cast<Fighter>(other)};
                     fighter->takeDamage();
                 }
             }

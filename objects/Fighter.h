@@ -22,5 +22,5 @@ public:
     bool move(const glm::vec3& direction);
     void shoot(const glm::vec3& direction, ProjectileOrigin projectileOrigin);
 
-    void takeDamage();
+    virtual void takeDamage();
 };

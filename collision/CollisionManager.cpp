@@ -45,23 +45,11 @@ bool CollisionManager::checkForBoxCollision(const std::shared_ptr<Object>& a, co
     const MinMaxes aBoxWorldMinMaxes{getMinMaxesInWorldSpace(a->getBoundingBox(), a->getModelMatrix())};
     const MinMaxes bBoxWorldMinMaxes{getMinMaxesInWorldSpace(b->getBoundingBox(), b->getModelMatrix())};
 
-    const bool result{
+    return
         aBoxWorldMinMaxes.minX <= bBoxWorldMinMaxes.maxX &&
         aBoxWorldMinMaxes.maxX >= bBoxWorldMinMaxes.minX &&
         aBoxWorldMinMaxes.minY <= bBoxWorldMinMaxes.maxY &&
         aBoxWorldMinMaxes.maxY >= bBoxWorldMinMaxes.minY &&
         aBoxWorldMinMaxes.minZ <= bBoxWorldMinMaxes.maxZ &&
-        aBoxWorldMinMaxes.maxZ >= bBoxWorldMinMaxes.minZ
-    };
-
-    if (result)
-    {
-        std::cout << "Collision between " << a->id << " and " << b->id << '\n';
-        std::cout << "Object " << a->id << " bounds: min(" << aBoxWorldMinMaxes.minX << ", " << aBoxWorldMinMaxes.minY << ", " << aBoxWorldMinMaxes.minZ 
-                  << ") max(" << aBoxWorldMinMaxes.maxX << ", " << aBoxWorldMinMaxes.maxY << ", " << aBoxWorldMinMaxes.maxZ << ")\n";
-        std::cout << "Object " << b->id << " bounds: min(" << bBoxWorldMinMaxes.minX << ", " << bBoxWorldMinMaxes.minY << ", " << bBoxWorldMinMaxes.minZ 
-                  << ") max(" << bBoxWorldMinMaxes.maxX << ", " << bBoxWorldMinMaxes.maxY << ", " << bBoxWorldMinMaxes.maxZ << ")\n";
-    }
-
-    return result;
+        aBoxWorldMinMaxes.maxZ >= bBoxWorldMinMaxes.minZ;
 }

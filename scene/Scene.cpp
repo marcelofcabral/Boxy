@@ -4,9 +4,6 @@
 #include <ostream>
 
 #include "../camera/Camera.h"
-#include "../collision/CollisionManager.h"
-#include "../objects/Enemy.h"
-#include "../objects/Projectile.h"
 
 Scene::Scene(const std::shared_ptr<Camera>& camera) : camera{camera}
 {
@@ -22,12 +19,7 @@ void Scene::render() const
 
 void Scene::add(const std::shared_ptr<Object>& object)
 {
-    const auto res{objects.insert(object)};
-
-    if (res.second)
-    {
-        std::cout << "Objects added" << std::endl;
-    }
+    objects.insert(object);
 }
 
 bool Scene::contains(const std::shared_ptr<Object>& object)
@@ -53,7 +45,6 @@ void Scene::tick()
     for (const std::shared_ptr<Object>& object : toBeRemoved)
     {
         remove(object);
-        std::cout << "removed object" << '\n';
     }
 
     toBeRemoved.clear();
@@ -104,7 +95,6 @@ void Scene::printProjectileCount() const
 
 void Scene::toggleRenderCollisionBoxes()
 {
-    std::cout << "toggle render bb" << '\n';
     shouldRenderCollisionBoxes = !shouldRenderCollisionBoxes;
     
     for (const std::shared_ptr<Object>& object : objects)

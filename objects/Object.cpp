@@ -27,7 +27,17 @@ void Object::move(const glm::vec3& movementVector, const bool isFighter)
 {
     if (!isFighter)
         modelMatrix[3] += glm::vec4{movementVector, 0.0f};
-        // modelMatrix = glm::translate(modelMatrix, direction);
+
+    shaderProgram.use();
+
+    shaderProgram.setUniformMat4f(ShaderProgram::modelMatrixUniformName, modelMatrix);
+
+    boundingBox.updatePositionToMatchOwner();
+}
+
+void Object::setPosition(const glm::vec3& position)
+{
+    modelMatrix[3] = glm::vec4{position, 1.0f};
 
     shaderProgram.use();
 

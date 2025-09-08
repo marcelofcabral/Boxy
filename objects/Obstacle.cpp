@@ -25,6 +25,4 @@ Obstacle::Obstacle(const std::shared_ptr<Camera>& camera, const glm::vec3& world
     "./shaders/shader_sources/PlayerFragmentShader.glsl")
 {
     id = std::string("Obstacle ") + std::to_string(std::rand());
-    std::cout << "original vertices of obstacle:" << '\n';
-    logging::printVector(shape.getVertices());
 }

@@ -61,6 +61,7 @@ private:
     bool viewChanged{false};
 
 public:
+    bool isLocked = false;
     static float distanceToOrigin;
     
     glm::mat4& getViewMatrix();

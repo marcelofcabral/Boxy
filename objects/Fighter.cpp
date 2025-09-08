@@ -5,7 +5,7 @@
 #include "../scene/Scene.h"
 #include "../utils/Timing.h"
 
-float Fighter::speed = 15.f;
+float Fighter::speed = 20.f;
 
 shapes::Cuboid Fighter::shape{
     1.f,
@@ -24,24 +24,19 @@ Fighter::Fighter(const std::shared_ptr<Camera>& camera, const std::shared_ptr<Sc
 bool Fighter::move(const glm::vec3& direction)
 {
     const glm::vec3 movementVector = direction * speed * timing::deltaTime;
-
-    // modelMatrix = glm::translate(modelMatrix, movementVector);
+    
     modelMatrix[3] += glm::vec4{movementVector, 0.0f};
 
-    const bool willCollide = scene->isColliding<Object>(shared_from_this()) || modelMatrix[3].x < -50.f ||
-        modelMatrix[3].y < -50.f || modelMatrix[3].z < -50.f || modelMatrix[3].x > 50.f || modelMatrix[3].y > 50.f ||
-        modelMatrix[3].z > 50.f;
+    const bool willCollide = modelMatrix[3].x < -50.f ||
+        modelMatrix[3].y < -50.f || modelMatrix[3].x > 50.f || modelMatrix[3].y > 50.f || scene->isColliding<Object>(
+            shared_from_this());
 
-    std::cout << id << " position: ";
-    printPosition();
-    
     if (!willCollide)
     {
         Object::move(movementVector, true);
     }
     else
     {
-        std::cout << "Collision when moving" << '\n';
         modelMatrix[3] -= glm::vec4{movementVector, 0.0f};
     }
 
