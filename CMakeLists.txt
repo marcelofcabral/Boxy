@@ -7,7 +7,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
-include_directories("W:/Documents/programacao/cpp_programs/learnopengl/include")
+set(INCLUDE_DIR "" CACHE PATH "Path to include directory")
+set(LIB_DIR "" CACHE PATH "Path to lib directory")
+
+include_directories(${INCLUDE_DIR})
 
 file(COPY "shaders" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -28,6 +31,6 @@ add_executable(Boxy ${SOURCES})
 
 target_link_libraries(Boxy
     PRIVATE
-    "W:/Documents/programacao/cpp_programs/learnopengl/lib/glfw3.lib"
+    "${LIB_DIR}/glfw3.lib"
 )
 
