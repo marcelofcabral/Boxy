@@ -184,6 +184,7 @@
   <ItemGroup>
     <Content Include=".clang-tidy" />
     <Content Include="CMakeLists.txt" />
+    <Content Include="README.md" />
     <Content Include="shaders\shader_sources\PlayerFragmentShader.glsl" />
     <Content Include="shaders\shader_sources\PlayerVertexShader.glsl" />
   </ItemGroup>
