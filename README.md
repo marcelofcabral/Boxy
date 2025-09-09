@@ -4,7 +4,7 @@ After finishing the first section of [LearnOpenGL](https://learnopengl.com/), I 
 It's a simple shooter where you (the green box) have to shoot and eliminate the enemies (the red boxes).
 
 ### About the code
-When deciding how to structure my code, I was inspired by the [Cell game engine by Joey DeVries](https://github.com/JoeyDeVries/Cell) and the [OpenGL snake game by Oleg Artene](https://github.com/01e9/snake-game-opengl) (which are pretty good repos to be used as learning resources) and separated the concerns into classes/entities such as Scene, Drawable, Objects, BoundingBox, CollisionManager, utility namespaces, shape structs etc.
+When deciding how to structure my code, I was inspired by the [Cell game engine by Joey DeVries](https://github.com/JoeyDeVries/Cell) and the [OpenGL snake game by Oleg Artene](https://github.com/01e9/snake-game-opengl) (which are pretty good repos to be used as learning resources) and separated the concerns into classes/entities such as `Scene`, `Drawable`, `Object`, `BoundingBox`, `CollisionManager`, utility namespaces, shape structs etc.
 
 ### How is collision implemented?
 Collision is implemented using the well-known "self-adaptive" [Axis Aligned Bounding Boxes (AABB)](https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection),
